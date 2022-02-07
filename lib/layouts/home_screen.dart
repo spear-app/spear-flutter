@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spear_ui/modules/Welcome/welcome_screen.dart';
+import 'package:spear_ui/modules/login/login_screen.dart';
+import 'package:spear_ui/shared/costant.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = 'HomeScreen';
@@ -36,7 +38,16 @@ class _HomeScreenState extends State<HomeScreen> {
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
-              leading: Icon(Icons.settings),
+              leading:PopupMenuButton(itemBuilder:(context)=>
+              [
+                PopupMenuItem(
+                    child: InkWell(
+                        child: const Text('Log out'),
+                        onTap: push(context, LoginPage())
+                    )
+                )
+              ]
+              )
             ),
             // floatingActionButton: const FloatingActionButton(
             //   // onPressed: () {
