@@ -4,18 +4,18 @@ import 'package:intl/intl.dart';
 import 'package:spear_ui/shared/costant.dart';
 
 class MessageWidget extends StatelessWidget {
-  String? senderId;
+  bool? sent;
   //String? senderName;
   String? content;
   String? senderName;
   int? time;
-  MessageWidget(this.content, this.senderId, this.senderName, this.time);
+  MessageWidget({required this.content,required this.sent, required this.senderName, required this.time});
 
   @override
   Widget build(BuildContext context) {
     return content == null
         ? Container()
-        : (false
+        : (sent == true
         ? sentMessage(content!, time!)
         : RecievedMessage(content!, senderName!, time!));
   }
