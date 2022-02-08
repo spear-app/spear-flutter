@@ -1,30 +1,31 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:spear_ui/modules/chat/message.dart';
 import 'package:spear_ui/shared/costant.dart';
+import 'package:spear_ui/shared/logic/text_to_speech.dart';
 
 class MessageWidget extends StatelessWidget {
-  bool? sent;
-  //String? senderName;
-  String? content;
-  String? senderName;
-  int? time;
-  MessageWidget({required this.content,required this.sent, required this.senderName, required this.time});
+  Message message;
+
+  MessageWidget({required this.message});
+
 
   @override
   Widget build(BuildContext context) {
-    return content == null
+    return message.content == null
         ? Container()
-        : (sent == true
-        ? sentMessage(content!, time!)
-        : RecievedMessage(content!, senderName!, time!));
+        : (message.sent == true
+        ? sentMessage(message.content!, message.time!, message.language!)
+        : RecievedMessage(message.content!, message.senderName!, message.time!));
   }
 }
 
 class sentMessage extends StatelessWidget {
   String content;
   int time;
-  sentMessage(this.content, this.time);
+  String language;
+  sentMessage(this.content, this.time, this.language);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -32,18 +33,35 @@ class sentMessage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Container(
-              padding: EdgeInsets.all(12),
-              margin: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: orange,
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(12),
-                  bottomRight: Radius.circular(12),
-                  bottomLeft: Radius.circular(12),
+          Flexible(
+            child: Container(
+                padding: EdgeInsets.all(12),
+                margin: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: orange,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    bottomRight: Radius.circular(12),
+                    bottomLeft: Radius.circular(12),
+                  ),
                 ),
-              ),
-              child: Text(content, style: TextStyle(color: Colors.white)))
+                child:Text(content,
+                  style: const TextStyle(color: Colors.white),
+                  softWrap: true,
+                )),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              InkWell(
+                child: Icon(Icons.keyboard_voice, color: blue,),
+                onTap: (){
+                  speak(content, 1 , language);
+                },
+
+              )
+            ],
+          )
         ],
       ),
     );
@@ -68,17 +86,19 @@ class RecievedMessage extends StatelessWidget {
           ),
           Row(
             children: [
-              Container(
-                  padding: EdgeInsets.all(12),
-                  margin: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.2),
-                      borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(12),
-                          bottomRight: Radius.circular(12),
-                          topLeft: Radius.circular(12))),
+              Flexible(
+                child: Container(
+                    padding: EdgeInsets.all(12),
+                    margin: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.2),
+                        borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(12),
+                            bottomRight: Radius.circular(12),
+                            topLeft: Radius.circular(12))),
 
-                  child: Text(content,style: TextStyle(color: blue))
+                    child: Text(content,style: TextStyle(color: blue),softWrap: true,)
+                ),
               ),
             ],
           )

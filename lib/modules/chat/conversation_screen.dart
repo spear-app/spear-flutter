@@ -19,12 +19,14 @@ class _ConversationScreenState extends State<ConversationScreen> {
   List<Message> messagesList = [];
   final String defaultLanguage = 'en-US';
 
-  String? language;
+  late String language;
   String? currentLang;
   String? languageCode;
   List<String> languages = <String>[];
   List<String> languageCodes = <String>[];
   String? voice;
+  ScrollController _scrollController = ScrollController();
+
 
   late TextEditingController messageController;
   @override
@@ -58,10 +60,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
     } else {
       languageCode = defaultLanguage;
     }
-    language = await tts.getDisplayLanguageByCode(languageCode!);
-
-    /// get voice
-    //voice = await getVoiceByLang(languageCode!);
+    language = (await tts.getDisplayLanguageByCode(languageCode!))!;
 
     if (mounted) {
       setState(() {});
@@ -70,9 +69,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //final args = ModalRoute.of(context)?.settings.arguments as RoomDetailsArgs;
-    // final Stream<QuerySnapshot<Messages>> messagesStream =
-    // messageRef.orderBy('time').snapshots();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {_scrollController.jumpTo(_scrollController.position.maxScrollExtent);});
 
     return Container(
       child: Stack(
@@ -115,25 +112,24 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 children: [
                   Expanded(
                       child: ListView.builder(
-                    itemBuilder: (buildContext, index) {
-                      return MessageWidget(
-                        content: messagesList[index].content,
-                        senderName: messagesList[index].senderName,
-                        sent: messagesList[index].sent,
-                        time: messagesList[index].time,
-                      );
-                    },
-                    itemCount: messagesList.length,
+                        itemBuilder: (buildContext, index) {
+                          return MessageWidget(
+                            message: messagesList[index],
+                          );
+                        },
+                        itemCount: messagesList.length,
+                        controller: _scrollController,
+
                   )),
                   Row(
                     children: [
-                      IconButton(
-                          icon: Icon(
+                      InkWell(
+                          child: Icon(
                             Icons.language,
                             color: blue,
-                            size: 30,
+                            size: 25,
                           ),
-                          onPressed: () {
+                          onTap: () {
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -181,6 +177,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.only(
                                       topRight: Radius.circular(12)))),
+                          maxLines: null,
                         ),
                       ),
                       InkWell(
@@ -227,7 +224,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
         content: typedMessage,
         time: DateTime.now().microsecondsSinceEpoch,
         senderName: "You",
-        sent: true);
+        sent: true,
+        language: language
+    );
 
     speak(typedMessage, 1, language).then((value) {
       setState(() {
