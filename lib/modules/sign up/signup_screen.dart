@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:spear_ui/layouts/home_screen.dart';
 import 'package:spear_ui/modules/login/login_screen.dart';
 import 'package:spear_ui/shared/components.dart';
 import 'package:spear_ui/shared/costant.dart';
+import 'package:spear_ui/shared/models/auth.dart';
 
 class SignUpPage extends StatefulWidget {
   static const String routeName = 'signUp';
@@ -18,12 +20,44 @@ class _SignUpPageState extends State<SignUpPage> {
   String email = '';
   String name= '';
   String password = '';
+  String gender = '';
   String confirmPassword = '';
   bool isLoading = false;
   bool _isObscure = true;
 
+  var signUp ;
+
+  bool showPassword = false;
+  bool obsecurePassword = true;
+
+  //Auth auth = new Auth();
+  validate(BuildContext context) async {
+    final loginResponse = await signUp.login(
+        email, password,name,gender, context);
+    if (loginResponse != 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('email or password')));
+    } else{
+      String? token = Provider.of<Auth>(
+        context,
+        listen: false,
+      ).token;
+
+      print ("doneeeeeeeeeeeeeeeeeeeeeeeee");
+
+      //SharedPreferences prefs = await SharedPreferences.getInstance();
+      //prefs.setString('token', token);
+      //prefs.setString('username', _authData['username']);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    signUp = Provider.of<Auth>(
+      context,
+      listen: false,
+    );
+
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
 
@@ -108,7 +142,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               return null;
                             },
                             onChanged: (newValue) {
-                              name = newValue;
+                              gender = newValue;
                             },
                           ),
                           TextFormField(
@@ -164,7 +198,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       ? const Center(
                     child: CircularProgressIndicator(),
                   )
-                      : customRoundedButton("Sign Up", Size(width / 10, 12), push(context, HomeScreen()) ),
+                      : customRoundedButton("Sign Up", Size(width / 10, 12), signUpFunc() ),
                 ],
               ),
             ),
@@ -224,4 +258,19 @@ class _SignUpPageState extends State<SignUpPage> {
 //       }
 //   );
 // }
+
+  signUpFunc ()
+  {
+    var f = signUpFormKey.currentState;
+    var f1 = f?.validate();
+    if (f1== null)
+    {
+      print("invalidddd");
+    }
+    else
+    {
+      f?.save();
+      validate(context);
+    }
+  }
 }
