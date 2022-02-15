@@ -32,11 +32,11 @@ class _SignUpPageState extends State<SignUpPage> {
 
   //Auth auth = new Auth();
   validate(BuildContext context) async {
-    final loginResponse = await signUp.login(
+    final loginResponse = await signUp.signUp(
         email, password,name,gender, context);
     if (loginResponse != 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('email or password')));
+     // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('email or password')));
+      showErrorMessage('Something went wrong, please try again');
     } else{
       String? token = Provider.of<Auth>(
         context,
@@ -234,30 +234,30 @@ class _SignUpPageState extends State<SignUpPage> {
 //       } );
 //     }
 //   } on FirebaseAuthException catch (e) {
-//     showErrorMessage(e.message??'Something went wrong, please try again');
+//
 //   }
 //   setState(() {
 //     isLoading = false;
 //   });
 // }
 //
-// showErrorMessage(String message)
-// {
-//   showDialog(context: context,
-//       builder: (buildContext) {
-//         return AlertDialog(
-//           content: Text(message),
-//           actions: [
-//             TextButton(onPressed: (){
-//               Navigator.pop(context);
-//             },
-//                 child: Text('OK'))
-//           ],
-//
-//         );
-//       }
-//   );
-// }
+showErrorMessage(String message)
+{
+  showDialog(context: context,
+      builder: (buildContext) {
+        return AlertDialog(
+          content: Text(message),
+          actions: [
+            TextButton(onPressed: (){
+              Navigator.pop(context);
+            },
+                child: Text('OK'))
+          ],
+
+        );
+      }
+  );
+}
 
   signUpFunc ()
   {

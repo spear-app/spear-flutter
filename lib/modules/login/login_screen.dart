@@ -139,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                               if (value == null || value.isEmpty) {
                                 return 'please enter password';
                               }
-
+                              return null;
                             },
                             onChanged: (newValue) {
                               password = newValue;
