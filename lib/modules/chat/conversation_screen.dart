@@ -219,7 +219,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   }
 
   void sendMessage() {
-    if (typedMessage.isEmpty) return;
+    if (typedMessage=="") return;
     final message = Message(
         content: typedMessage,
         time: DateTime.now().microsecondsSinceEpoch,
@@ -232,9 +232,13 @@ class _ConversationScreenState extends State<ConversationScreen> {
       setState(() {
         messageController.clear();
         messagesList.add(message);
+        typedMessage="";
+
       });
     });
   }
+
+
 // }
 //
 // class RoomDetailsArgs {

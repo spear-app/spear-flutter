@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spear_ui/modules/Welcome/welcome_screen.dart';
 import 'package:spear_ui/modules/login/login_screen.dart';
+import 'package:spear_ui/modules/sign%20up/signup_screen.dart';
 import 'package:spear_ui/shared/costant.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -43,9 +44,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 PopupMenuItem(
                     child: InkWell(
                         child: const Text('Log out'),
-                        onTap: push(context, LoginPage())
+                        onTap: push(context,LoginPage())
                     )
                 )
+
               ]
               )
             ),
@@ -64,5 +66,10 @@ class _HomeScreenState extends State<HomeScreen> {
               child: WelcomeScreen(),
             ),
           );
+  }
+
+  logout()
+  {
+    Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> LoginPage()));
   }
 }

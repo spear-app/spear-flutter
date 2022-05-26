@@ -198,7 +198,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       ? const Center(
                     child: CircularProgressIndicator(),
                   )
-                      : customRoundedButton("Sign Up", Size(width / 10, 12), signUpFunc() ),
+                      : customRoundedButton("Sign Up", Size(width / 10, 12), push(context, HomeScreen()) ),
                 ],
               ),
             ),
@@ -271,6 +271,7 @@ showErrorMessage(String message)
     {
       f?.save();
       validate(context);
+      push(context, HomeScreen());
     }
   }
 }

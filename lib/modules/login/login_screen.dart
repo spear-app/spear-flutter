@@ -8,7 +8,7 @@ import 'package:spear_ui/shared/costant.dart';
 import 'package:spear_ui/shared/models/auth.dart';
 
 class LoginPage extends StatefulWidget {
-  static const String routeName = 'login';
+  static const String routeName = 'loginPage';
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -182,7 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                       ? const Center(
                           child: CircularProgressIndicator(),
                         )
-                      : customRoundedButton("Login", Size(width / 10, 12),loginFunc() ),
+                      : customRoundedButton("Login", Size(width / 10, 12),push(context,HomeScreen()) ),
                 ],
               ),
             ),
@@ -244,7 +244,7 @@ class _LoginPageState extends State<LoginPage> {
   // }
 
 loginFunc ()
-{
+{/*
   var f = loginFormKey.currentState;
   var f1 = f?.validate();
   if (f1== null)
@@ -255,6 +255,8 @@ loginFunc ()
   {
   f?.save();
   validate(context);
-  }
+  push(context, HomeScreen());
+  }*/
+  Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> HomeScreen()));
 }
 }

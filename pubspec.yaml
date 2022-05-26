@@ -38,6 +38,7 @@ dependencies:
   text_to_speech: ^0.2.3
   http: ^0.13.4
   dio: ^4.0.4
+  speech_to_text: ^5.4.3
 
 
   # The following adds the Cupertino Icons font to your application.
