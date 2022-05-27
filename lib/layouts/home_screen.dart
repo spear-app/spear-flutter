@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spear_ui/modules/Welcome/welcome_screen.dart';
 import 'package:spear_ui/modules/login/login_screen.dart';
 import 'package:spear_ui/modules/sign%20up/signup_screen.dart';
@@ -44,7 +45,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 PopupMenuItem(
                     child: InkWell(
                         child: const Text('Log out'),
-                        onTap: push(context,LoginPage())
+                        onTap: ()async{
+                          Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> LoginPage()));
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          prefs.clear();                        }
                     )
                 )
 
@@ -68,8 +72,4 @@ class _HomeScreenState extends State<HomeScreen> {
           );
   }
 
-  logout()
-  {
-    Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> LoginPage()));
-  }
 }

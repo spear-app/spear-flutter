@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spear_ui/layouts/home_screen.dart';
+import 'package:spear_ui/modules/Welcome/welcome_screen.dart';
 import 'package:spear_ui/modules/sign%20up/signup_screen.dart';
 import 'package:spear_ui/shared/components.dart';
 import 'package:spear_ui/shared/costant.dart';
@@ -60,135 +62,147 @@ class _LoginPageState extends State<LoginPage> {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
 
-    return Stack(
-      children: [
-        Container(color: Colors.white),
-        Container(
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage("assets/images/background.png"),
-                  fit: BoxFit.fill)),
-        ),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
+    return Scaffold(
+        body: Stack(
+        children: [
+          Container(color: Colors.white),
+          Container(
+            decoration: const BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage("assets/images/background.png"),
+                    fit: BoxFit.fill)),
           ),
-          body: SingleChildScrollView(
-            child: Container(
-              padding: EdgeInsets.only(top: height / 10),
-              child: Column(
-                children: [
-                  Text(
-                    "Login",
-                    style: TextStyle(
-                        color: orange,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 40),
-                  ),
-                  Form(
-                    key: loginFormKey,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: width / 8),
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'email',
-                              labelStyle: TextStyle(
-                                  color: Colors.black54, fontSize: 15),
-                              floatingLabelBehavior: FloatingLabelBehavior.auto,
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'please enter your email';
-                              }
-                              return null;
-                            },
-                            onChanged: (newValue) {
-                              email = newValue;
-                            },
-                            onSaved: (value) {
-                              _authData['email'] = value!;
-                            },
-                          ),
-                          TextFormField(
-                            obscureText: _isObscure,
-                            decoration: InputDecoration(
-                              labelText: "password",
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _isObscure
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                  color: orange,
-                                  size: 20,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _isObscure = !_isObscure;
-                                  });
-                                },
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: Container(),
+            ),
+            body: SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.only(top: height / 10),
+                child: Column(
+                  children: [
+                    Text(
+                      "Login",
+                      style: TextStyle(
+                          color: orange,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 40),
+                    ),
+                    Form(
+                      key: loginFormKey,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: width / 8),
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: 'email',
+                                labelStyle: TextStyle(
+                                    color: Colors.black54, fontSize: 15),
+                                floatingLabelBehavior: FloatingLabelBehavior.auto,
                               ),
-                              labelStyle: const TextStyle(
-                                  color: Colors.black54, fontSize: 15),
-                              floatingLabelBehavior: FloatingLabelBehavior.auto,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'please enter your email';
+                                }
+                                return null;
+                              },
+                              onChanged: (newValue) {
+                                email = newValue;
+                              },
+                              onSaved: (value) {
+                                _authData['email'] = value!;
+                              },
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'please enter password';
-                              }
-                              return null;
-                            },
-                            onChanged: (newValue) {
-                              password = newValue;
-                            },
-                            onSaved: (value) {
-                              _authData['password'] = value!;
-                            },
+                            TextFormField(
+                              obscureText: _isObscure,
+                              decoration: InputDecoration(
+                                labelText: "password",
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _isObscure
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: orange,
+                                    size: 20,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isObscure = !_isObscure;
+                                    });
+                                  },
+                                ),
+                                labelStyle: const TextStyle(
+                                    color: Colors.black54, fontSize: 15),
+                                floatingLabelBehavior: FloatingLabelBehavior.auto,
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'please enter password';
+                                }
+                                return null;
+                              },
+                              onChanged: (newValue) {
+                                password = newValue;
+                              },
+                              onSaved: (value) {
+                                _authData['password'] = value!;
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 20, bottom: 20,right: width / 8 ),
+                        child: InkWell(
+                          onTap: () => null,
+                          child: Text(
+                            "Forget password?",
+                            style: TextStyle(color: orange, fontSize: 12),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 20, bottom: 20,right: width / 8 ),
-                      child: InkWell(
-                        onTap: () => null,
-                        child: Text(
-                          "Forget password?",
-                          style: TextStyle(color: orange, fontSize: 12),
                         ),
                       ),
                     ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(bottom: 20, left:  width / 8),
-                      child: InkWell(
-                        onTap: push(context, SignUpPage()),
-                        child: Text(
-                          "Don't have an account? Sign up",
-                          style: TextStyle(color: blue, fontSize: 12),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 20, left:  width / 8),
+                        child: InkWell(
+                          onTap: push(context, SignUpPage()),
+                          child: Text(
+                            "Don't have an account? Sign up",
+                            style: TextStyle(color: blue, fontSize: 12),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  isLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : customRoundedButton("Login", Size(width / 10, 12),push(context,HomeScreen()) ),
-                ],
+                    customRoundedButton("Login", Size(width / 10, 12),()async{
+
+                      if (loginFormKey.currentState?.validate()==true)
+                      {
+                        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> HomeScreen()));
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        //prefs.setString('token', token);
+                        prefs.setString('email', email);
+                      }
+                      else
+                      {
+                        print("invalidddd");
+                      }
+                    }),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -243,20 +257,4 @@ class _LoginPageState extends State<LoginPage> {
   //   );
   // }
 
-loginFunc ()
-{/*
-  var f = loginFormKey.currentState;
-  var f1 = f?.validate();
-  if (f1== null)
-  {
-  print("invalidddd");
-  }
-  else
-  {
-  f?.save();
-  validate(context);
-  push(context, HomeScreen());
-  }*/
-  Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> HomeScreen()));
-}
 }

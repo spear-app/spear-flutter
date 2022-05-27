@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spear_ui/layouts/home_screen.dart';
+import 'package:spear_ui/modules/Welcome/welcome_screen.dart';
 import 'package:spear_ui/modules/login/login_screen.dart';
 import 'package:spear_ui/shared/components.dart';
 import 'package:spear_ui/shared/costant.dart';
@@ -20,10 +22,10 @@ class _SignUpPageState extends State<SignUpPage> {
   String email = '';
   String name= '';
   String password = '';
-  String gender = '';
   String confirmPassword = '';
   bool isLoading = false;
   bool _isObscure = true;
+  Object? gender = '';
 
   var signUp ;
 
@@ -61,150 +63,187 @@ class _SignUpPageState extends State<SignUpPage> {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
 
-    return Stack(
-      children: [
-        Container(color: Colors.white),
-        Container(
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage("assets/images/background.png"),
-                  fit: BoxFit.fill)),
-        ),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
+    return Scaffold(
+      body: Stack(
+        children: [
+          Container(color: Colors.white),
+          Container(
+            decoration: const BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage("assets/images/background.png"),
+                    fit: BoxFit.fill)),
           ),
-          body: SingleChildScrollView(
-            child: Container(
-              padding: EdgeInsets.only(top: height / 10),
-              child: Column(
-                children: [
-                  Text(
-                    "Sign Up",
-                    style: TextStyle(
-                        color: orange,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 40),
-                  ),
-                  Form(
-                    key: signUpFormKey,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: width / 8),
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'name',
-                              labelStyle: TextStyle(
-                                  color: Colors.black54, fontSize: 15),
-                              floatingLabelBehavior: FloatingLabelBehavior.auto,
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'please enter your name';
-                              }
-                              return null;
-                            },
-                            onChanged: (newValue) {
-                              name = newValue;
-                            },
-                          ),
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'email',
-                              labelStyle: TextStyle(
-                                  color: Colors.black54, fontSize: 15),
-                              floatingLabelBehavior: FloatingLabelBehavior.auto,
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'please enter your email';
-                              }
-                              return null;
-                            },
-                            onChanged: (newValue) {
-                              email = newValue;
-                            },
-                          ),
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'gender',
-                              labelStyle: TextStyle(
-                                  color: Colors.black54, fontSize: 15),
-                              floatingLabelBehavior: FloatingLabelBehavior.auto,
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'please enter your name';
-                              }
-                              return null;
-                            },
-                            onChanged: (newValue) {
-                              gender = newValue;
-                            },
-                          ),
-                          TextFormField(
-                            obscureText: _isObscure,
-                            decoration: InputDecoration(
-                              labelText: "password",
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _isObscure
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                  color: orange,
-                                  size: 20,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _isObscure = !_isObscure;
-                                  });
-                                },
-                              ),
-                              labelStyle: const TextStyle(
-                                  color: Colors.black54, fontSize: 15),
-                              floatingLabelBehavior: FloatingLabelBehavior.auto,
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'please enter password';
-                              }
-                              return null;
-                            },
-                            onChanged: (newValue) {
-                              password = newValue;
-                            },
-                          ),
-                        ],
-                      ),
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: Container(),
+            ),
+            body: SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.only(top: height / 10),
+                child: Column(
+                  children: [
+                    Text(
+                      "Sign Up",
+                      style: TextStyle(
+                          color: orange,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 40),
                     ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(top:20, bottom: 20, left:  width / 8),
-                      child: InkWell(
-                        onTap: push(context, LoginPage()) ,
-                        child: Text(
-                          "Already have an account? Login",
-                          style: TextStyle(color: blue, fontSize: 12),
+                    Form(
+                      key: signUpFormKey,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: width / 8),
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: 'name',
+                                labelStyle: TextStyle(
+                                    color: Colors.black54, fontSize: 15),
+                                floatingLabelBehavior: FloatingLabelBehavior.auto,
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'please enter your name';
+                                }
+                                return null;
+                              },
+                              onChanged: (newValue) {
+                                name = newValue;
+                              },
+                            ),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: 'email',
+                                labelStyle: TextStyle(
+                                    color: Colors.black54, fontSize: 15),
+                                floatingLabelBehavior: FloatingLabelBehavior.auto,
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'please enter your email';
+                                }
+                                return null;
+                              },
+                              onChanged: (newValue) {
+                                email = newValue;
+                              },
+                            ),
+                            TextFormField(
+                              obscureText: _isObscure,
+                              decoration: InputDecoration(
+                                labelText: "password",
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _isObscure
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: orange,
+                                    size: 20,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isObscure = !_isObscure;
+                                    });
+                                  },
+                                ),
+                                labelStyle: const TextStyle(
+                                    color: Colors.black54, fontSize: 15),
+                                floatingLabelBehavior: FloatingLabelBehavior.auto,
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'please enter password';
+                                }
+                                return null;
+                              },
+                              onChanged: (newValue) {
+                                password = newValue;
+                              },
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+
+                              children: [
+                                Expanded(
+                                  child: Row(
+                                      children: [
+                                        Radio(
+                                          value: "MALE",
+                                          groupValue: gender,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              gender = value;
+                                            });
+                                          },
+                                          activeColor: Colors.green,
+                                        ),
+                                        Text("Male", style: TextStyle(fontSize: 15),),
+                                      ]
+                                  ),
+                                  flex: 1,
+                                ),
+                                Expanded(
+                                  child: Row(
+                                      children: [
+                                        Radio(
+                                          value: "FEMALE",
+                                          groupValue: gender ,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              gender = value;
+                                            });
+                                          },
+                                          activeColor: Colors.green,
+                                        ),
+                                        Text("Female",style: TextStyle(fontSize: 15),),
+                                      ]
+                                  ),
+                                  flex: 1,
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ),
-                  isLoading
-                      ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                      : customRoundedButton("Sign Up", Size(width / 10, 12), push(context, HomeScreen()) ),
-                ],
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(top:20, bottom: 20, left:  width / 8),
+                        child: InkWell(
+                          onTap: push(context, LoginPage()) ,
+                          child: Text(
+                            "Already have an account? Login",
+                            style: TextStyle(color: blue, fontSize: 12),
+                          ),
+                        ),
+                      ),
+                    ),
+                    customRoundedButton("Sign Up", Size(width / 10, 12), ()async{
+                      if (signUpFormKey.currentState?.validate()==true)
+                      {
+                        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> HomeScreen()));
+
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        //prefs.setString('token', token);
+                        prefs.setString('email', email);
+                      }
+                      else
+                      {
+                        print("invalidddd");
+                      }
+                    }),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
