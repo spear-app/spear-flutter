@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spear_ui/layouts/home_screen.dart';
@@ -5,6 +7,8 @@ import 'package:spear_ui/modules/Chat/message_widget.dart';
 import 'package:spear_ui/modules/Welcome/welcome_screen.dart';
 import 'package:spear_ui/shared/costant.dart';
 import 'package:spear_ui/shared/logic/text_to_speech.dart';
+import 'package:speech_to_text/speech_to_text.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
 
 import 'message.dart';
 
@@ -19,6 +23,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
   String typedMessage = '';
   List<Message> messagesList = [];
   final String defaultLanguage = 'en-US';
+  SpeechToText speech = SpeechToText();
+  String _lastWords = '';
 
   late String language;
   String? currentLang;
@@ -27,6 +33,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   List<String> languageCodes = <String>[];
   String? voice;
   ScrollController _scrollController = ScrollController();
+  bool _speechEnabled = false;
 
 
   late TextEditingController messageController;
@@ -38,7 +45,16 @@ class _ConversationScreenState extends State<ConversationScreen> {
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       initLanguages();
     });
+    _initSpeech();
   }
+
+
+  void _initSpeech() async {
+    _speechEnabled = await speech.initialize();
+    setState(() {});
+    startListening();
+  }
+
 
   Future<void> initLanguages() async {
     /// populate lang code (i.e. en-US)
@@ -124,6 +140,10 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   )),
                   Row(
                     children: [
+                      InkWell(
+                        onTap: speech.isNotListening ? startListening : _stopListening,
+                        child: Icon(speech.isNotListening ? Icons.mic_off : Icons.mic),
+                      ),
                       InkWell(
                           child: Icon(
                             Icons.language,
@@ -217,6 +237,61 @@ class _ConversationScreenState extends State<ConversationScreen> {
         ],
       ),
     );
+  }
+
+
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      _lastWords = result.recognizedWords;
+      final message = Message(
+          content: _lastWords,
+          time: DateTime.now().microsecondsSinceEpoch,
+          senderName: "Person 1",
+          sent: false,
+          language: language
+      );
+      messagesList.add(message);
+    });
+  }
+ void startListening() async{
+    // _logEvent('start listening');
+    _lastWords = '';
+    // lastError = '';
+    // Note that `listenFor` is the maximum, not the minimun, on some
+    // recognition will be stopped before this value is reached.
+    // Similarly `pauseFor` is a maximum not a minimum and may be ignored
+    // on some devices.
+    while (true) {
+      await speech.listen(
+          onResult: _onSpeechResult,
+          listenFor: Duration(seconds: 60),
+          pauseFor: Duration(seconds: 60),
+          partialResults: true,
+          localeId: 'ar-EG',
+          //onSoundLevelChange:  soundLevelListener,
+          cancelOnError: true,
+          listenMode: ListenMode.confirmation);
+
+      setState(() {
+
+      });
+    }
+
+  }
+/*
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      _lastWords = result.recognizedWords;
+    });
+  }
+  void startListening() async {
+    await speech.listen(onResult: _onSpeechResult);
+    setState(() {});
+  }*/
+
+  void _stopListening() async {
+    await speech.stop();
+    setState(() {});
   }
 
   void sendMessage() {
