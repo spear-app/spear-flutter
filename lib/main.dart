@@ -11,7 +11,7 @@ void main() async{
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var email = prefs.getString('email');
   print(email);
-  runApp(MyApp(home: email==null?LoginPage():HomeScreen()));
+  runApp(MyApp(home: /*email==null?*/LoginPage()));
 }
 
 class MyApp extends StatelessWidget {

@@ -226,8 +226,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     customRoundedButton("Sign Up", Size(width / 10, 12), ()async{
                       if (signUpFormKey.currentState?.validate()==true)
                       {
-                        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> HomeScreen()));
-
+                        //Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> HomeScreen()));
+                        validate(context);
                         SharedPreferences prefs = await SharedPreferences.getInstance();
                         //prefs.setString('token', token);
                         prefs.setString('email', email);

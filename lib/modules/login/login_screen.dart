@@ -45,6 +45,7 @@ class _LoginPageState extends State<LoginPage> {
         listen: false,
       ).token;
 
+      //Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> HomeScreen()));
       print ("doneeeeeeeeeeeeeeeeeeeeeeeee");
 
       //SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -186,7 +187,8 @@ class _LoginPageState extends State<LoginPage> {
 
                       if (loginFormKey.currentState?.validate()==true)
                       {
-                        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> HomeScreen()));
+                        //Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> HomeScreen()));
+                        validate(context);
                         SharedPreferences prefs = await SharedPreferences.getInstance();
                         //prefs.setString('token', token);
                         prefs.setString('email', email);
