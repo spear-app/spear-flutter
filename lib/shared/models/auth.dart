@@ -27,7 +27,7 @@ class Auth with ChangeNotifier {
 
     //print('Bearer $authHeader');
     final url = Uri.parse(
-        'http://localhost:8000/api/login');
+        'http://172.18.160.1:8000/api/login');
     final response = await http.post(url,
         /*headers: {
           "Content-Type": "application/json",
@@ -60,7 +60,7 @@ class Auth with ChangeNotifier {
 
     //print('Bearer $authHeader');
     final url = Uri.parse(
-        'http://localhost:8000/api/signup');
+        'http://172.18.160.1:8000/api/signup');
     final response = await http.post(url,
         /*headers: {
           "Content-Type": "application/json",

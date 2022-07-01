@@ -47,9 +47,9 @@ class _SignUpPageState extends State<SignUpPage> {
 
       print ("doneeeeeeeeeeeeeeeeeeeeeeeee");
 
-      //SharedPreferences prefs = await SharedPreferences.getInstance();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       //prefs.setString('token', token);
-      //prefs.setString('username', _authData['username']);
+      prefs.setString('email', email);
     }
   }
 
@@ -228,9 +228,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       {
                         //Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> HomeScreen()));
                         validate(context);
-                        SharedPreferences prefs = await SharedPreferences.getInstance();
-                        //prefs.setString('token', token);
-                        prefs.setString('email', email);
+
                       }
                       else
                       {

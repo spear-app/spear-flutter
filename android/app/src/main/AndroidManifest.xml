@@ -2,6 +2,7 @@
     package="spearapp.com.spear_ui">
    <application
         android:label="spear_ui"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
