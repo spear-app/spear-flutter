@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       //prefs.setString('token', token);
-      prefs.setString('email', email);
+      prefs.setString('token', token!);
     }
   }
 

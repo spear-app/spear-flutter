@@ -49,7 +49,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       //prefs.setString('token', token);
-      prefs.setString('email', email);
+      prefs.setString('token', token!);
     }
   }
 

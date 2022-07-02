@@ -10,9 +10,9 @@ import 'package:spear_ui/shared/models/auth.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  var email = prefs.getString('email');
-  print(email);
-  runApp(MyApp(home: email==null?LoginPage(): WelcomeScreen()));
+  var token = prefs.getString('token');
+  //print(email);
+  runApp(MyApp(home: token==null?LoginPage(): WelcomeScreen()));
 }
 
 class MyApp extends StatelessWidget {
