@@ -12,7 +12,7 @@ void main() async{
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var token = prefs.getString('token');
   //print(email);
-  runApp(MyApp(home: token==null?LoginPage(): WelcomeScreen()));
+  runApp(MyApp(home: /*token==null?LoginPage(): */HomeScreen()));
 }
 
 class MyApp extends StatelessWidget {

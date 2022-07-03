@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:spear_ui/modules/Forward/forward_screen.dart';
 import 'package:spear_ui/modules/chat/conversation_screen.dart';
 import 'package:spear_ui/shared/components.dart';
 import 'package:spear_ui/shared/costant.dart';
@@ -27,6 +28,13 @@ class WelcomeScreen extends StatelessWidget {
             height: 15,
           ),
           customRoundedButton("My Notifications", Size(width / 1.22, 50), ()=>null),
+
+          const SizedBox(
+            height: 15,
+          ),
+          customRoundedButton("Forward Messages", Size(width / 1.22, 50), (){
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ForwardScreen() ));
+          }),
 
         ],
       ),

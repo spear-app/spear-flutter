@@ -46,7 +46,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: InkWell(
                         child: const Text('Log out'),
                         onTap: ()async{
-                          Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> LoginPage()));
+                          Navigator.pushAndRemoveUntil(context,
+                            MaterialPageRoute(builder: (context)=> LoginPage()),
+                              (Route<dynamic> route) =>false,
+                          );
                           SharedPreferences prefs = await SharedPreferences.getInstance();
                           prefs.clear();                        }
                     )

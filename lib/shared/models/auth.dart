@@ -46,8 +46,10 @@ class Auth with ChangeNotifier {
         print(responseData['error']['message'].toString());
       }
       _token = responseData['token'];
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (context)=> HomeScreen()),
+            (Route<dynamic> route) =>false,
+      );
     }
     return response.statusCode;
   }
@@ -81,8 +83,10 @@ class Auth with ChangeNotifier {
         print(responseData['error']['message'].toString());
       }
       _token = responseData['token'];
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (context)=> HomeScreen()),
+            (Route<dynamic> route) =>false,
+      );
     }
     return response.statusCode;
   }
