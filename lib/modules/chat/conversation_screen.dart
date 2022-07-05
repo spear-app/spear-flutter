@@ -446,8 +446,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
         //codec:Codec.aacADTS,
         whenFinished: () {
           setState(() async {
-            i++;
             //await deleteFile("/data/user/0/spearapp.com.spear_ui/cache/${i}.wav");
+            i++;
           });
         })
         .then((value) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spear_ui/layouts/home_screen.dart';
@@ -13,7 +14,7 @@ void main() async{
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var token = prefs.getString('token');
   //print(email);
-  runApp(MyApp(home: /*token==null?LoginPage(): */HomeScreen()));
+  runApp(MyApp(home: token==null?LoginPage(): HomeScreen()));
 }
 
 class MyApp extends StatelessWidget {
@@ -32,6 +33,8 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: home,
+        navigatorObservers: [FlutterSmartDialog.observer],
+        builder: FlutterSmartDialog.init(),
       ),
     );
   }

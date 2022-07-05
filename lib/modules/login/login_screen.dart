@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spear_ui/layouts/home_screen.dart';
@@ -34,9 +35,11 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   //Auth auth = new Auth();
   validate(BuildContext context) async {
+    SmartDialog.showLoading();
     final loginResponse = await login.login(
         email, password, context);
     if (loginResponse != 200) {
+      SmartDialog.dismiss();
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('email or password')));
     } else{
@@ -80,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
               elevation: 0,
               leading: Container(),
             ),
-            body: SingleChildScrollView(
+            body:SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.only(top: height / 10),
                 child: Column(

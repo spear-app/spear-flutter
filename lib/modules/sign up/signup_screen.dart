@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spear_ui/layouts/home_screen.dart';
@@ -34,9 +35,11 @@ class _SignUpPageState extends State<SignUpPage> {
 
   //Auth auth = new Auth();
   validate(BuildContext context) async {
-    final loginResponse = await signUp.signUp(
+    SmartDialog.showLoading();
+    final signUpResponse = await signUp.signUp(
         email, password,name,gender, context);
-    if (loginResponse != 200) {
+    if (signUpResponse != 200) {
+      SmartDialog.dismiss();
      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('email or password')));
       showErrorMessage('Something went wrong, please try again');
     } else{
