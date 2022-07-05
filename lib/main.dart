@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spear_ui/layouts/home_screen.dart';
+import 'package:spear_ui/modules/Forward/forward.dart';
 import 'package:spear_ui/modules/Welcome/welcome_screen.dart';
 import 'package:spear_ui/modules/login/login_screen.dart';
 import 'package:spear_ui/shared/models/auth.dart';

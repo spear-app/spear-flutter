@@ -1,4 +1,5 @@
-
+import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,12 @@ import 'package:spear_ui/shared/costant.dart';
 import 'package:spear_ui/shared/logic/text_to_speech.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
+import 'dart:async';
+import 'package:audio_session/audio_session.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:permission_handler/permission_handler.dart';
 
 import 'message.dart';
 
@@ -18,6 +25,8 @@ class ConversationScreen extends StatefulWidget {
   @override
   _ConversationScreenState createState() => _ConversationScreenState();
 }
+
+const theSource = AudioSource.microphone;
 
 class _ConversationScreenState extends State<ConversationScreen> {
   String typedMessage = '';
@@ -40,12 +49,24 @@ class _ConversationScreenState extends State<ConversationScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
+
     messageController = TextEditingController(text: typedMessage);
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       initLanguages();
     });
-    _initSpeech();
+    //_initSpeech();
+
+    _mPlayer!.openPlayer().then((value) {
+      setState(() {
+        //_mPlayerIsInited = true;
+      });
+    });
+    openTheRecorder().then((value) {
+      dorecord();
+    });
+
+
+    super.initState();
   }
 
 
@@ -82,6 +103,13 @@ class _ConversationScreenState extends State<ConversationScreen> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  void dispose() {
+    _mPlayer!.closePlayer();
+    _mPlayer = null;
+
+    super.dispose();
   }
 
   @override
@@ -141,7 +169,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   Row(
                     children: [
                       InkWell(
-                        onTap: speech.isNotListening ? startListening : _stopListening,
+                        onTap: dostopRecorder,
                         child: Icon(speech.isNotListening ? Icons.mic_off : Icons.mic),
                       ),
                       InkWell(
@@ -314,6 +342,129 @@ class _ConversationScreenState extends State<ConversationScreen> {
     });
   }
 
+
+
+  Codec _codec = Codec.pcm16WAV;
+  var x = 1;
+  FlutterSoundPlayer? _mPlayer = FlutterSoundPlayer();
+  FlutterSoundRecorder? _mRecorder = FlutterSoundRecorder();
+
+  Future<void> openTheRecorder() async {
+    //downloadDirectory= (await getDownloadsDirectory())!;
+    if (!kIsWeb) {
+      var status = await Permission.microphone.request();
+      if (status != PermissionStatus.granted) {
+        throw RecordingPermissionException('Microphone permission not granted');
+      }
+    }
+    await _mRecorder!.openRecorder();
+    /*if (!await _mRecorder!.isEncoderSupported(_codec) && kIsWeb) {
+      //_codec = Codec.opusWebM;
+      //_mPath = 'tau_file.webm';
+      if (!await _mRecorder!.isEncoderSupported(_codec) && kIsWeb) {
+        _mRecorderIsInited = true;
+        return;
+      }
+    }*/
+    final session = await AudioSession.instance;
+    await session.configure(AudioSessionConfiguration(
+      avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
+      avAudioSessionCategoryOptions:
+      AVAudioSessionCategoryOptions.allowBluetooth |
+      AVAudioSessionCategoryOptions.defaultToSpeaker,
+      avAudioSessionMode: AVAudioSessionMode.spokenAudio,
+      avAudioSessionRouteSharingPolicy:
+      AVAudioSessionRouteSharingPolicy.defaultPolicy,
+      avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
+      androidAudioAttributes: const AndroidAudioAttributes(
+        contentType: AndroidAudioContentType.speech,
+        flags: AndroidAudioFlags.none,
+        usage: AndroidAudioUsage.voiceCommunication,
+      ),
+      androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
+      androidWillPauseWhenDucked: true,
+    ));
+
+    //_mRecorderIsInited = true;
+  }
+
+  void record() async{
+    _mRecorder!
+        .startRecorder(
+      toFile: '/data/user/0/spearapp.com.spear_ui/cache/${x}.wav',
+      // codec: _codec,
+      audioSource: theSource,
+    )
+        .then((value) {
+      setState(() {});
+    });
+  }
+  late Timer timer;
+  void dorecord()async {
+    record();
+    timer = Timer.periodic(Duration(seconds: 5), (timer) async {
+      await stopRecorder();
+      setState((){
+        x++;
+      });
+      record();
+    });
+  }
+
+  Future<void> stopRecorder() async {
+    await _mRecorder!.stopRecorder().then((value) {
+      setState(() {
+        //var url = value;
+        //_mplaybackReady = true;
+        print("reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee  ");
+        print('${x}.wav');
+      });
+    });
+  }
+
+  int i = 1;
+  void dostopRecorder()
+  async{
+
+    if (i ==1) {
+      timer.cancel();
+
+      if (!_mRecorder!.isStopped) {
+        await stopRecorder();
+      }
+      print("reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee     ${x}");
+    }
+
+    play();
+  }
+
+  Future<void> play() async {
+
+    _mPlayer!
+        .startPlayer(
+        fromURI: "/data/user/0/spearapp.com.spear_ui/cache/${i}.wav",
+        //codec:Codec.aacADTS,
+        whenFinished: () {
+          setState(() async {
+            i++;
+            //await deleteFile("/data/user/0/spearapp.com.spear_ui/cache/${i}.wav");
+          });
+        })
+        .then((value) {
+      setState(() {});
+    });
+  }
+
+  Future<void> deleteFile(String path) async {
+    try {
+      File file = new File(path);
+      if (await file.exists()) {
+        await file.delete();
+      }
+    } catch (e) {
+      print("Error in getting access to the file.");
+    }
+  }
 
 // }
 //

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'dart:async';
 
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 /*void main() => runApp(MyApp());*/
 
-class MyApp extends StatefulWidget {
+class MyApp2 extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp2> {
   late StreamSubscription _intentDataStreamSubscription;
   List<SharedMediaFile>? _sharedFiles;
   String? _sharedText;
@@ -25,6 +26,7 @@ class _MyAppState extends State<MyApp> {
       setState(() {
         _sharedFiles = value;
         print("Shared:" + (_sharedFiles?.map((f) => f.path).join(",") ?? ""));
+        print("Shared:" + (_sharedFiles?.map((f) => f.type).join(",") ?? ""));
       });
     }, onError: (err) {
       print("getIntentDataStream error: $err");
@@ -34,7 +36,10 @@ class _MyAppState extends State<MyApp> {
     ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
       setState(() {
         _sharedFiles = value;
-        print("Shared:" + (_sharedFiles?.map((f) => f.path).join(",") ?? ""));
+        final FlutterFFmpeg _flutterFFmpeg = new FlutterFFmpeg();
+
+        _flutterFFmpeg.execute("-i ${_sharedFiles?.map((f) => f.path)} output.wav").then((rc) => print("FFmpeg process exited with rc $rc"));
+        //print("Shared:" + (_sharedFiles?.map((f) => f.path).join(",") ?? ""));
       });
     });
 
@@ -68,22 +73,25 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     const textStyleBold = const TextStyle(fontWeight: FontWeight.bold);
     return MaterialApp(
-      home: Scaffold(
-        body: Container(
-          decoration: BoxDecoration(
-              image: DecorationImage(image: AssetImage("background.png"))),
-          child: Center(
-            child: Column(
-              children: <Widget>[
-                Text("Shared files:", style: textStyleBold),
-                Text(_sharedFiles
-                    ?.map((f) =>
-                "{Path: ${f.path}, Type: ${f.type.toString().replaceFirst("SharedMediaType.", "")}}\n")
-                    .join(",\n") ??
-                    ""),
-                Text("Shared urls/text:", style: textStyleBold),
-                Text(_sharedText ?? "")
-              ],
+      home: SafeArea(
+        child: Scaffold(
+          body: Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(image: AssetImage("assets/images/background.png"))),
+            child: Center(
+              child: Column(
+                children: <Widget>[
+                  Text("Shared files:", style: textStyleBold),
+                  Text(_sharedFiles
+                      ?.map((f) =>
+                  "{Path: ${f.path}, Type: ${f.path.toString().replaceFirst("SharedMediaType.", "")}}\n")
+                      .join(",\n") ??
+                      ""),
+
+                  Text("Shared urls/text:", style: textStyleBold),
+                  Text(_sharedText ?? "")
+                ],
+              ),
             ),
           ),
         ),
