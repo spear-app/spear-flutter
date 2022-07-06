@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="spearapp.com.spear_ui">
    <application
-        android:label="spear_ui"
+        android:label="SPEAR"
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true"
