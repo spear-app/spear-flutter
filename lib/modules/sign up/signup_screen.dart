@@ -39,7 +39,6 @@ class _SignUpPageState extends State<SignUpPage> {
     final signUpResponse = await signUp.signUp(
         email, password,name,gender, context);
     if (signUpResponse != 200) {
-      SmartDialog.dismiss();
      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('email or password')));
       showErrorMessage('Something went wrong, please try again');
     } else{
@@ -54,6 +53,7 @@ class _SignUpPageState extends State<SignUpPage> {
       //prefs.setString('token', token);
       prefs.setString('token', token!);
     }
+    SmartDialog.dismiss();
   }
 
   @override

@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
     final loginResponse = await login.login(
         email, password, context);
     if (loginResponse != 200) {
-      SmartDialog.dismiss();
+
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('email or password')));
     } else{
@@ -55,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
       //prefs.setString('token', token);
       prefs.setString('token', token!);
     }
+    SmartDialog.dismiss();
   }
 
   @override
