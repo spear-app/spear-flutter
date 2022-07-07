@@ -1,12 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:spear_ui/modules/chat/message.dart';
-import 'package:spear_ui/shared/costant.dart';
+import 'package:spear_ui/shared/constant.dart';
 import 'package:spear_ui/shared/logic/text_to_speech.dart';
 
 class MessageWidget extends StatelessWidget {
-  Message message;
+  final Message message;
 
   MessageWidget({required this.message});
 
@@ -16,15 +14,15 @@ class MessageWidget extends StatelessWidget {
     return message.content == null
         ? Container()
         : (message.sent == true
-        ? sentMessage(message.content!, message.time!, message.language!)
-        : RecievedMessage(message.content!, message.senderName!, message.time!));
+        ? sentMessage(message.content, message.time, message.language)
+        : ReceivedMessage(message.content, message.senderName, message.time));
   }
 }
 
 class sentMessage extends StatelessWidget {
-  String content;
-  int time;
-  String language;
+  final String content;
+  final int time;
+  final String language;
   sentMessage(this.content, this.time, this.language);
   @override
   Widget build(BuildContext context) {
@@ -68,11 +66,11 @@ class sentMessage extends StatelessWidget {
   }
 }
 
-class RecievedMessage extends StatelessWidget {
-  String content;
-  String senderName;
-  int time;
-  RecievedMessage(this.content, this.senderName, this.time);
+class ReceivedMessage extends StatelessWidget {
+  final String content;
+  final String senderName;
+  final int time;
+  ReceivedMessage(this.content, this.senderName, this.time);
   @override
   Widget build(BuildContext context) {
     return Padding(

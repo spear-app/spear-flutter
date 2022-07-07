@@ -1,21 +1,27 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:spear_ui/layouts/home_screen.dart';
+import 'package:spear_ui/modules/Welcome/welcome_screen.dart';
+import 'package:spear_ui/modules/sign%20up/verification_screen.dart';
+import 'package:spear_ui/shared/models/user.dart';
 
 class Auth with ChangeNotifier {
   late String _token;
+  static User? _currentUser;
+
 
   bool get isAuth {
     return token != null;
   }
 
   String? get token {
-    if (_token != null) {
       return _token;
+  }
+  User? get currentUser {
+    if (_currentUser != null) {
+      return _currentUser;
     }
     return null;
   }
@@ -47,9 +53,13 @@ class Auth with ChangeNotifier {
       }
       _token = responseData['token'];
       Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context)=> HomeScreen()),
+        MaterialPageRoute(builder: (context)=> WelcomeScreen(_currentUser!.name)),
             (Route<dynamic> route) =>false,
       );
+      print(responseData['user']);
+      _currentUser = User.fromJson(responseData['user']);
+      print(_currentUser!.name);
+      print(_currentUser!.id);
     }
     return response.statusCode;
   }
@@ -62,7 +72,7 @@ class Auth with ChangeNotifier {
 
     //print('Bearer $authHeader');
     final url = Uri.parse(
-        'http://92.168.100.10:8000/api/signup');
+        'http://192.168.100.10:8000/api/signup');
     final response = await http.post(url,
         /*headers: {
           "Content-Type": "application/json",
@@ -84,18 +94,42 @@ class Auth with ChangeNotifier {
       }
       _token = responseData['token'];
       Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context)=> HomeScreen()),
+        MaterialPageRoute(builder: (context)=> VerificationScreen()),
             (Route<dynamic> route) =>false,
       );
+
+      print(responseData['user']);
+     _currentUser = User.fromJson(responseData['user']);
     }
     return response.statusCode;
   }
 
-  Future<int> verify(String id)
-  {
+  Future<int> verify(String code, BuildContext context)
+  async{
+    String uri = 'http://192.168.100.10:8000/api/v1/confirmEmail/${_currentUser!.id}';
+    print(uri);
+    print(code);
     final url = Uri.parse(
-        'http://92.168.100.10:8000/api/');
-    return 0;
+        uri);
+
+    final response = await http.post(url,
+        /*headers: {
+          "Content-Type": "application/json",
+          HttpHeaders.authorizationHeader: "Bearer $authHeader"
+        },*/
+        body: json.encode(<String, dynamic>{
+          "OTP" : code,
+        }));
+
+    if (response.statusCode == 200) {
+
+      Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (context) => WelcomeScreen(_currentUser!.name)),
+            (Route<dynamic> route) => false,
+      );
+    }
+    print(response.statusCode);
+    return response.statusCode;
   }
 
 }

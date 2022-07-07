@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:spear_ui/shared/costant.dart';
+import 'package:spear_ui/shared/constant.dart';
 
 Widget customRoundedButton(String text, Size size, Function()? function) => ElevatedButton(
     child: Padding(

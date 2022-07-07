@@ -1,13 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spear_ui/layouts/home_screen.dart';
-import 'package:spear_ui/modules/Welcome/welcome_screen.dart';
 import 'package:spear_ui/modules/login/login_screen.dart';
 import 'package:spear_ui/shared/components.dart';
-import 'package:spear_ui/shared/costant.dart';
+import 'package:spear_ui/shared/constant.dart';
 import 'package:spear_ui/shared/models/auth.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -36,24 +32,23 @@ class _SignUpPageState extends State<SignUpPage> {
   //Auth auth = new Auth();
   validate(BuildContext context) async {
     SmartDialog.showLoading();
-    final signUpResponse = await signUp.signUp(
-        email, password,name,gender, context);
-    if (signUpResponse != 200) {
-     // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('email or password')));
-      showErrorMessage('Something went wrong, please try again');
-    } else{
-      String? token = Provider.of<Auth>(
-        context,
-        listen: false,
-      ).token;
-
-      print ("doneeeeeeeeeeeeeeeeeeeeeeeee");
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      //prefs.setString('token', token);
-      prefs.setString('token', token!);
+    try {
+      final signUpResponse = await signUp.signUp(
+          email, password, name, gender, context);
+      if (signUpResponse != 200) {
+        // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('email or password')));
+        showErrorMessage('Something went wrong, please try again');
+      } else {
+        print("doneeeeeeeeeeeeeeeeeeeeeeeee");
+      }
+      SmartDialog.dismiss();
     }
-    SmartDialog.dismiss();
+    catch(e)
+    {
+      print (e);
+      SmartDialog.dismiss();
+      showErrorMessage('Something went wrong, please try again');
+    }
   }
 
   @override
@@ -248,39 +243,6 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-// LoginButton()
-// {
-//   if(loginFormKey.currentState?.validate()== true)
-//     loginUser();
-// }
-//
-// final database = FirebaseFirestore.instance;
-//
-// loginUser() async {
-//   setState(() {
-//     isLoading = true;
-//   });
-//   try {
-//     UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-//         email: email,
-//         password: password
-//     );
-//     if(userCredential.user == null)
-//       showErrorMessage('no user exists with this email and password');
-//     else{
-//       getUsersCollection().doc(userCredential.user!.uid).get().then((user){
-//         provider.updateUser(user.data());
-//         Navigator.pushReplacementNamed(context, HomeScreen.routeName);
-//       } );
-//     }
-//   } on FirebaseAuthException catch (e) {
-//
-//   }
-//   setState(() {
-//     isLoading = false;
-//   });
-// }
-//
 showErrorMessage(String message)
 {
   showDialog(context: context,
@@ -299,7 +261,7 @@ showErrorMessage(String message)
   );
 }
 
-  signUpFunc ()
+ /* signUpFunc ()
   {
     var f = signUpFormKey.currentState;
     var f1 = f?.validate();
@@ -313,5 +275,5 @@ showErrorMessage(String message)
       validate(context);
       push(context, HomeScreen());
     }
-  }
+  }*/
 }

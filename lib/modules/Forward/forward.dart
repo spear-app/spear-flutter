@@ -76,7 +76,7 @@ class _MyAppState extends State<MyApp2> {
       home: SafeArea(
         child: Scaffold(
           body: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 image: DecorationImage(image: AssetImage("assets/images/background.png"))),
             child: Center(
               child: Column(
@@ -88,7 +88,7 @@ class _MyAppState extends State<MyApp2> {
                       .join(",\n") ??
                       ""),
 
-                  Text("Shared urls/text:", style: textStyleBold),
+                  const Text("Shared urls/text:", style: textStyleBold),
                   Text(_sharedText ?? "")
                 ],
               ),

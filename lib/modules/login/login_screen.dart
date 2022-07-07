@@ -1,14 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spear_ui/layouts/home_screen.dart';
-import 'package:spear_ui/modules/Welcome/welcome_screen.dart';
 import 'package:spear_ui/modules/sign%20up/signup_screen.dart';
 import 'package:spear_ui/shared/components.dart';
-import 'package:spear_ui/shared/costant.dart';
+import 'package:spear_ui/shared/constant.dart';
 import 'package:spear_ui/shared/models/auth.dart';
+import 'package:spear_ui/shared/models/user.dart';
 
 class LoginPage extends StatefulWidget {
   static const String routeName = 'loginPage';
@@ -32,30 +30,44 @@ class _LoginPageState extends State<LoginPage> {
   };
   bool showPassword = false;
   bool obsecurePassword = true;
-  final GlobalKey<FormState> _formKey = GlobalKey();
   //Auth auth = new Auth();
   validate(BuildContext context) async {
     SmartDialog.showLoading();
-    final loginResponse = await login.login(
-        email, password, context);
-    if (loginResponse != 200) {
+    try {
+      final loginResponse = await login.login(
+          email, password, context);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('email or password')));
-    } else{
-      String? token = Provider.of<Auth>(
-        context,
-        listen: false,
-      ).token;
+      if (loginResponse != 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('email or password')));
+      } else {
+        String? token = Provider
+            .of<Auth>(
+          context,
+          listen: false,
+        ).token;
 
-      //Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> HomeScreen()));
-      print ("doneeeeeeeeeeeeeeeeeeeeeeeee");
+        User? user = Provider
+            .of<Auth>(
+          context,
+          listen: false,
+        ).currentUser;
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      //prefs.setString('token', token);
-      prefs.setString('token', token!);
+        //Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> HomeScreen()));
+        print("doneeeeeeeeeeeeeeeeeeeeeeeee");
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        //prefs.setString('token', token);
+        prefs.setString('token', token!.trim());
+        prefs.setString('name', user!.name.trim());
+      }
+      SmartDialog.dismiss();
     }
-    SmartDialog.dismiss();
+    catch(e)
+    {
+      print(e);
+      SmartDialog.dismiss();
+    }
   }
 
   @override

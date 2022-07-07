@@ -1,18 +1,16 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:spear_ui/layouts/home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spear_ui/modules/Chat/message_widget.dart';
 import 'package:spear_ui/modules/Welcome/welcome_screen.dart';
-import 'package:spear_ui/shared/costant.dart';
+import 'package:spear_ui/shared/constant.dart';
 import 'package:spear_ui/shared/logic/text_to_speech.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
-import 'dart:async';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:permission_handler/permission_handler.dart';
@@ -51,7 +49,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
     // TODO: implement initState
 
     messageController = TextEditingController(text: typedMessage);
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       initLanguages();
     });
     //_initSpeech();
@@ -114,7 +112,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {_scrollController.jumpTo(_scrollController.position.maxScrollExtent);});
+    WidgetsBinding.instance.addPostFrameCallback((_) {_scrollController.jumpTo(_scrollController.position.maxScrollExtent);});
 
     return Container(
       child: Stack(
@@ -142,7 +140,16 @@ class _ConversationScreenState extends State<ConversationScreen> {
                           PopupMenuItem(
                               child: InkWell(
                                   child: const Text('End Conversation'),
-                                  onTap: push(context,HomeScreen())))
+                                  onTap:()async
+                                  {
+                                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                                    String? name = prefs.getString('name');
+                                    Navigator.pushAndRemoveUntil(context,
+                                      MaterialPageRoute(builder: (context)=>WelcomeScreen(name!)),
+                                          (Route<dynamic> route) =>false,
+                                    );
+                                  }
+                              ))
                         ])),
             body: Container(
               padding: const EdgeInsets.all(8),
@@ -344,7 +351,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
 
 
-  Codec _codec = Codec.pcm16WAV;
   var x = 1;
   FlutterSoundPlayer? _mPlayer = FlutterSoundPlayer();
   FlutterSoundRecorder? _mRecorder = FlutterSoundRecorder();
