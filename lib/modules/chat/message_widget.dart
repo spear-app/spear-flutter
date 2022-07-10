@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:spear_ui/modules/chat/message.dart';
 import 'package:spear_ui/shared/constant.dart';
 import 'package:spear_ui/shared/logic/text_to_speech.dart';
+import 'package:spear_ui/shared/models/message.dart';
 
 class MessageWidget extends StatelessWidget {
   final Message message;

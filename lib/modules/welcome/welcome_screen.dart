@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spear_ui/modules/Forward/forward_screen.dart';
 import 'package:spear_ui/modules/chat/conversation_screen.dart';
 import 'package:spear_ui/shared/components.dart';
 import 'package:spear_ui/shared/constant.dart';
+import 'package:spear_ui/shared/models/api_services.dart';
+import 'package:spear_ui/shared/models/auth.dart';
 
 import '../login/login_screen.dart';
 
@@ -11,6 +15,26 @@ class WelcomeScreen extends StatelessWidget {
   WelcomeScreen(this.name) ;
 
   final String name;
+
+  startConversation(context)
+  async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var token = pref.getString('token');
+    SmartDialog.showLoading();
+    try{
+      ApiServices api = ApiServices(token!);
+      final responce = api.startConversation(context);
+      if (responce != 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('error in starting conversation')));
+      }
+      SmartDialog.dismiss();
+    }catch(e)
+    {
+      SmartDialog.dismiss();
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +88,9 @@ class WelcomeScreen extends StatelessWidget {
                 height: height / 7,
               ),
               customRoundedButton(
-                  "Start A New Conversation", Size(width / 1.22, 50), push(context, ConversationScreen())),
+                  "Start A New Conversation", Size(width / 1.22, 50), ()async{
+                    await startConversation(context);
+              }),
               const SizedBox(
                 height: 15,
               ),

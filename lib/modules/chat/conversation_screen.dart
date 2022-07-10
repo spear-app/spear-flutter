@@ -2,11 +2,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spear_ui/modules/Chat/message_widget.dart';
 import 'package:spear_ui/modules/Welcome/welcome_screen.dart';
 import 'package:spear_ui/shared/constant.dart';
 import 'package:spear_ui/shared/logic/text_to_speech.dart';
+import 'package:spear_ui/shared/models/api_services.dart';
+import 'package:spear_ui/shared/models/message.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -15,7 +18,6 @@ import 'package:audio_session/audio_session.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:permission_handler/permission_handler.dart';
 
-import 'message.dart';
 
 class ConversationScreen extends StatefulWidget {
   static const routeName = "RoomDetailsScreen";
@@ -60,7 +62,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
       });
     });
     openTheRecorder().then((value) {
-      dorecord();
+      start();
     });
 
 
@@ -142,6 +144,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                   child: const Text('End Conversation'),
                                   onTap:()async
                                   {
+                                    await endConversation(context);
                                     SharedPreferences prefs = await SharedPreferences.getInstance();
                                     String? name = prefs.getString('name');
                                     Navigator.pushAndRemoveUntil(context,
@@ -406,7 +409,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
     });
   }
   late Timer timer;
-  void dorecord()async {
+  Future<void>dorecord()async {
     record();
     timer = Timer.periodic(Duration(seconds: 5), (timer) async {
       await stopRecorder();
@@ -469,6 +472,47 @@ class _ConversationScreenState extends State<ConversationScreen> {
       }
     } catch (e) {
       print("Error in getting access to the file.");
+    }
+  }
+
+  int count = 1;
+  Future <void> getMessageFromApi()
+  async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString('token');
+    ApiServices api = ApiServices.getinstance();
+
+    sleep(Duration(seconds: 5));
+    timer = Timer.periodic(Duration(seconds: 5), (timer) async {
+      Message message = await api.sendAudio("/data/user/0/spearapp.com.spear_ui/cache/${count}.wav", "$count");
+      count ++;
+      messagesList.add(message);
+    });
+  }
+  
+  
+  start (){
+    Future.wait([dorecord(), getMessageFromApi()]);
+  }
+
+
+  endConversation(context)
+  async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var token = pref.getString('token');
+    SmartDialog.showLoading();
+    try{
+      ApiServices api = ApiServices(token!);
+      final responce = api.endConversation();
+      if (responce != 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('error in ending conversation')));
+      }
+      SmartDialog.dismiss();
+    }catch(e)
+    {
+      SmartDialog.dismiss();
+      print(e);
     }
   }
 
