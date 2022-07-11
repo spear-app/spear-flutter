@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -84,11 +85,11 @@ class ApiServices{
     }
   }
 
-  sendAudio (path, fileName) async
+  sendAudio (File file, fileName) async
   {
     FormData formData = FormData.fromMap({
       "audio":
-      await MultipartFile.fromFile(path, filename:fileName, contentType:new MediaType('audio', 'wav')),
+      await MultipartFile.fromFile(file.path, filename:fileName, contentType:new MediaType('audio', 'wav')),
     });
     final response = await dio.post(sendAudioApi, data: formData);
     /*Dio().post(sendAudioApi,
@@ -110,4 +111,6 @@ class ApiServices{
       throw Exception("error in sending audio");
     }
   }
+
+
 }

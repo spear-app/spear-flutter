@@ -484,9 +484,16 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
     sleep(Duration(seconds: 5));
     timer = Timer.periodic(Duration(seconds: 5), (timer) async {
-      Message message = await api.sendAudio("/data/user/0/spearapp.com.spear_ui/cache/${count}.wav", "$count.wav");
-      count ++;
-      messagesList.add(message);
+      final uri = Uri.parse("/data/user/0/spearapp.com.spear_ui/cache/${count}.wav");
+      File file = File(uri.path);
+      api.sendAudio(file, "$count.wav").then((value){
+        setState((){
+          count ++;
+          messagesList.add(value);
+        });
+      });
+
+
     });
   }
   
