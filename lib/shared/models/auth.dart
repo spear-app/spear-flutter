@@ -33,7 +33,7 @@ class Auth with ChangeNotifier {
 
     //print('Bearer $authHeader');
     final url = Uri.parse(
-        'http://192.168.100.10:8000/api/login');
+        'http://100.68.80.20:8000/api/login');
     final response = await http.post(url,
         /*headers: {
           "Content-Type": "application/json",
@@ -72,7 +72,7 @@ class Auth with ChangeNotifier {
 
     //print('Bearer $authHeader');
     final url = Uri.parse(
-        'http://192.168.100.10:8000/api/signup');
+        'http://100.68.80.20:8000/api/signup');
     final response = await http.post(url,
         /*headers: {
           "Content-Type": "application/json",
@@ -94,7 +94,7 @@ class Auth with ChangeNotifier {
       }
       _token = responseData['token'];
       Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context)=> VerificationScreen()),
+        MaterialPageRoute(builder: (context)=> WelcomeScreen(name)),
             (Route<dynamic> route) =>false,
       );
 
@@ -106,7 +106,7 @@ class Auth with ChangeNotifier {
 
   Future<int> verify(String code, BuildContext context)
   async{
-    String uri = 'http://192.168.100.10:8000/api/v1/confirmEmail/${_currentUser!.id}';
+    String uri = 'http://100.68.80.20:8000/api/v1/confirmEmail/${_currentUser!.id}';
     print(uri);
     print(code);
     final url = Uri.parse(

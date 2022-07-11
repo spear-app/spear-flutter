@@ -144,7 +144,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                   child: const Text('End Conversation'),
                                   onTap:()async
                                   {
-
                                     await endConversation(context);
                                     SharedPreferences prefs = await SharedPreferences.getInstance();
                                     String? name = prefs.getString('name');
@@ -481,11 +480,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
   async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
-    ApiServices api = ApiServices.getinstance();
+    ApiServices api = ApiServices.getinstance(token!);
 
     sleep(Duration(seconds: 5));
     timer = Timer.periodic(Duration(seconds: 5), (timer) async {
-      Message message = await api.sendAudio("/data/user/0/spearapp.com.spear_ui/cache/${count}.wav", "$count");
+      Message message = await api.sendAudio("/data/user/0/spearapp.com.spear_ui/cache/${count}.wav", "$count.wav");
       count ++;
       messagesList.add(message);
     });

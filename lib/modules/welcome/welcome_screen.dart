@@ -11,19 +11,24 @@ import 'package:spear_ui/shared/models/auth.dart';
 
 import '../login/login_screen.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   WelcomeScreen(this.name) ;
 
   final String name;
 
+  @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
   startConversation(context)
   async {
+    SmartDialog.showLoading();
     SharedPreferences pref = await SharedPreferences.getInstance();
     var token = pref.getString('token');
-    SmartDialog.showLoading();
     try{
-      ApiServices api = ApiServices(token!);
-      final responce = api.startConversation(context);
+      ApiServices api = ApiServices.getinstance(token!);
+      final responce = await api.startConversation(context);
       if (responce != 200) {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('error in starting conversation')));
@@ -80,7 +85,7 @@ class WelcomeScreen extends StatelessWidget {
           padding: EdgeInsets.only(top: height / 4),
           child: Column(
             children: [
-              Text("Welcome ${name.trim()} !",
+              Text("Welcome ${widget.name.trim()} !",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 35, color: orange, fontWeight: FontWeight.bold)),
