@@ -144,6 +144,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                   child: const Text('End Conversation'),
                                   onTap:()async
                                   {
+
                                     await endConversation(context);
                                     SharedPreferences prefs = await SharedPreferences.getInstance();
                                     String? name = prefs.getString('name');
