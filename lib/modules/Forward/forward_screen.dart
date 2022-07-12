@@ -1,5 +1,12 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:spear_ui/shared/components.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spear_ui/shared/components.dart';
+import 'package:spear_ui/shared/models/api_services.dart';
 
 class ForwardScreen extends StatefulWidget {
   const ForwardScreen({Key? key}) : super(key: key);
@@ -10,11 +17,50 @@ class ForwardScreen extends StatefulWidget {
 
 class _ForwardScreenState extends State<ForwardScreen> {
 
+  late StreamSubscription _intentDataStreamSubscription;
+  TextEditingController textController = new TextEditingController();
+  List<SharedMediaFile>? _sharedFiles;
+  String fileName = "File Name";
+  String _sharedText = "";
+  String path = "";
+  void initState() {
+    super.initState();
+
+    // For sharing images coming from outside the app while the app is in the memory
+    _intentDataStreamSubscription = ReceiveSharingIntent.getMediaStream()
+        .listen((List<SharedMediaFile> value) {
+      setState(() {
+        _sharedFiles = value;
+        print("Shared:" + (_sharedFiles?.map((f) => f.path).join(",") ?? ""));
+        print("Shared:" + (_sharedFiles?.map((f) => f.type).join(",") ?? ""));
+        print(_sharedFiles?.first.path);
+      });
+    }, onError: (err) {
+      print("getIntentDataStream error: $err");
+    });
+
+    // For sharing images coming from outside the app while the app is closed
+    ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
+      setState(() {
+        _sharedFiles = value;
+        fileName = "${_sharedFiles?.first.path}";
+        print("reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+      });
+    });
+
+  }
+
+  @override
+  void dispose() {
+    _intentDataStreamSubscription.cancel();
+    textController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
-    TextEditingController textController = new TextEditingController();
     return Scaffold(
       body: Stack(
         children: [
@@ -34,7 +80,22 @@ class _ForwardScreenState extends State<ForwardScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    customRoundedButton("Choose Audio", Size(width / 2, 50), () => null),
+                    customRoundedButton("Write text", Size(width / 2, 50), () async{
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      var token = prefs.getString('token');
+                      ApiServices api = ApiServices.getinstance(token!);
+                      path ="${_sharedFiles?.first.path}";
+                      final uri = Uri.parse(path);
+                      File file = File(uri.path);
+                      api.forwardAudio(file, _sharedFiles?.first.path).then((value){
+                        setState((){
+                          _sharedText = value;
+                          textController.text = _sharedText;
+                        });
+                      });
+                      //_sharedFiles?.clear();
+                    }),
+                    Text(fileName),
                     SizedBox(
                       height: height / 10,
                     ),

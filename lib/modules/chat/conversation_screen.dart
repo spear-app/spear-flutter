@@ -144,6 +144,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                   child: const Text('End Conversation'),
                                   onTap:()async
                                   {
+                                    dostopRecorder();
+                                    timer1.cancel();
                                     await endConversation(context);
                                     SharedPreferences prefs = await SharedPreferences.getInstance();
                                     String? name = prefs.getString('name');
@@ -476,6 +478,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   }
 
   int count = 1;
+  late Timer timer1 ;
   Future <void> getMessageFromApi()
   async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -483,8 +486,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
     ApiServices api = ApiServices.getinstance(token!);
 
     sleep(Duration(seconds: 5));
-    timer = Timer.periodic(Duration(seconds: 5), (timer) async {
-      final uri = Uri.parse("/data/user/0/spearapp.com.spear_ui/cache/${count}.wav");
+    timer1 = Timer.periodic(Duration(seconds: 5), (timer) async {
+      final uri = Uri.parse("assets/images/1.wav");
       File file = File(uri.path);
       api.sendAudio(file, "$count.wav").then((value){
         setState((){

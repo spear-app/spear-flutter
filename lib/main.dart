@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spear_ui/modules/Forward/forward.dart';
 import 'package:spear_ui/modules/Welcome/welcome_screen.dart';
 import 'package:spear_ui/modules/login/login_screen.dart';
 import 'package:spear_ui/shared/models/auth.dart';
@@ -13,7 +14,8 @@ void main() async{
   var token = prefs.getString('token');
   String? name = prefs.getString('name');
   //print(email);
-  runApp(MyApp(home: token==null?LoginPage(): WelcomeScreen(name!)));
+  /**/
+  runApp(MyApp(home:token==null?LoginPage(): WelcomeScreen(name!)));
 }
 
 class MyApp extends StatelessWidget {

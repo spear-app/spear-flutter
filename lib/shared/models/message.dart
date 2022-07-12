@@ -18,7 +18,7 @@ class Message{
 
     );*/
 
-  factory Message.fromJson(dynamic json){
+  factory Message.fromJson(Map<String, dynamic> json){
     return Message(
         content: json["text"] as String,
         time: 122222,

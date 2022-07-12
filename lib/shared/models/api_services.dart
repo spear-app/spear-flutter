@@ -13,6 +13,7 @@ class ApiServices{
   String startConv= "http://100.68.80.20:8000/api/audio/start_conversation";
   String endConv= "http://100.68.80.20:8000/api/audio/end_conversation";
   String sendAudioApi = "http://100.68.80.20:8000/api/audio/send_audio";
+  String forwardAudioApi = "http://100.68.80.20:8000/api/audio/recorded_audio";
 
   Dio dio = new Dio();
 
@@ -100,17 +101,47 @@ class ApiServices{
     ),
       data: formData
     );*/
-
+    print(response.data);
     if (response.statusCode ==200)
       {
         print ('reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
-        return Message.fromJson(jsonDecode(response.data));
+        return Message.fromJson(response.data);
       }
     else {
-      print(response.statusMessage);
+      final responseData = jsonDecode(response.data);
+      print(responseData['error']);
       throw Exception("error in sending audio");
     }
   }
 
+
+  forwardAudio (file, fileName) async
+  {
+    FormData formData = FormData.fromMap({
+      "audio":
+      await MultipartFile.fromFile(file.path, filename:fileName, contentType:new MediaType('audio', 'wav')),
+    });
+    final response = await dio.post(forwardAudioApi, data: formData);
+    /*Dio().post(sendAudioApi,
+    options: Options(
+      contentType: 'audio/wav',
+      responseType: ResponseType.json,
+      headers:{"Authorization":'bearer $token'},
+    ),
+      data: formData
+    );*/
+
+    print(response.data);
+    if (response.statusCode ==200)
+    {
+      print ('reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+      return response.data['text'];
+      //return responseData['text'];
+    }
+    else {
+      print(response.data);
+      throw Exception("error in sending audio");
+    }
+  }
 
 }
