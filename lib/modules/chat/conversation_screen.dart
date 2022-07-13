@@ -485,9 +485,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
     var token = prefs.getString('token');
     ApiServices api = ApiServices.getinstance(token!);
 
-    sleep(Duration(seconds: 5));
+    sleep(Duration(seconds: 10));
     timer1 = Timer.periodic(Duration(seconds: 5), (timer) async {
-      final uri = Uri.parse("assets/images/1.wav");
+      final uri = Uri.parse("/data/user/0/spearapp.com.spear_ui/cache/${count}.wav");
       File file = File(uri.path);
       api.sendAudio(file, "$count.wav").then((value){
         setState((){

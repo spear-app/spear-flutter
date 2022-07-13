@@ -41,19 +41,27 @@ class _ForwardScreenState extends State<ForwardScreen> {
 
     // For sharing images coming from outside the app while the app is closed
     ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
-      setState(() {
+      setState(() async{
         _sharedFiles = value;
         fileName = "${_sharedFiles?.first.path}";
         print("reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool("forward", true);
       });
     });
 
   }
 
+  end()
+  async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove("forward");
+  }
   @override
   void dispose() {
     _intentDataStreamSubscription.cancel();
     textController.dispose();
+    end();
     super.dispose();
   }
 

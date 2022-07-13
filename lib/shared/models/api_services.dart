@@ -105,7 +105,7 @@ class ApiServices{
     if (response.statusCode ==200)
       {
         print ('reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
-        return Message.fromJson(response.data);
+        return Message(content: response.data['text'], language: "ss", sent: false, time: 122, senderName:response.data['speaker']);
       }
     else {
       final responseData = jsonDecode(response.data);
@@ -119,7 +119,7 @@ class ApiServices{
   {
     FormData formData = FormData.fromMap({
       "audio":
-      await MultipartFile.fromFile(file.path, filename:fileName, contentType:new MediaType('audio', 'wav')),
+      await MultipartFile.fromFile(file.path, filename:fileName),
     });
     final response = await dio.post(forwardAudioApi, data: formData);
     /*Dio().post(sendAudioApi,
