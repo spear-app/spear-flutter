@@ -30,7 +30,6 @@ class _LoginPageState extends State<LoginPage> {
   };
   bool showPassword = false;
   bool obsecurePassword = true;
-  //Auth auth = new Auth();
   validate(BuildContext context) async {
     SmartDialog.showLoading();
     try {
@@ -53,13 +52,13 @@ class _LoginPageState extends State<LoginPage> {
           listen: false,
         ).currentUser;
 
-        //Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> HomeScreen()));
-        print("doneeeeeeeeeeeeeeeeeeeeeeeee");
-
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        //prefs.setString('token', token);
         prefs.setString('token', token!.trim());
         prefs.setString('name', user!.name.trim());
+        int gender = 1;
+        if (user!.gender.trim() == "MALE")
+          gender = 0;
+        prefs.setInt("gender", gender);
       }
       SmartDialog.dismiss();
     }
@@ -222,55 +221,5 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // LoginButton()
-  // {
-  //   if(loginFormKey.currentState?.validate()== true)
-  //     loginUser();
-  // }
-  //
-  // final database = FirebaseFirestore.instance;
-  //
-  // loginUser() async {
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  //   try {
-  //     UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-  //         email: email,
-  //         password: password
-  //     );
-  //     if(userCredential.user == null)
-  //       showErrorMessage('no user exists with this email and password');
-  //     else{
-  //       getUsersCollection().doc(userCredential.user!.uid).get().then((user){
-  //         provider.updateUser(user.data());
-  //         Navigator.pushReplacementNamed(context, HomeScreen.routeName);
-  //       } );
-  //     }
-  //   } on FirebaseAuthException catch (e) {
-  //     showErrorMessage(e.message??'Something went wrong, please try again');
-  //   }
-  //   setState(() {
-  //     isLoading = false;
-  //   });
-  // }
-  //
-  // showErrorMessage(String message)
-  // {
-  //   showDialog(context: context,
-  //       builder: (buildContext) {
-  //         return AlertDialog(
-  //           content: Text(message),
-  //           actions: [
-  //             TextButton(onPressed: (){
-  //               Navigator.pop(context);
-  //             },
-  //                 child: Text('OK'))
-  //           ],
-  //
-  //         );
-  //       }
-  //   );
-  // }
 
 }

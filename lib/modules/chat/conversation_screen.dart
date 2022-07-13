@@ -34,7 +34,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   final String defaultLanguage = 'en-US';
   SpeechToText speech = SpeechToText();
   String _lastWords = '';
-
+  int gender = 1;
   late String language;
   String? currentLang;
   String? languageCode;
@@ -344,7 +344,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
         language: language
     );
 
-    speak(typedMessage, 1, language).then((value) {
+    speak(typedMessage, gender, language).then((value) {
       setState(() {
         messageController.clear();
         messagesList.add(message);
@@ -502,7 +502,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
   }
   
   
-  start (){
+  start ()async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    gender = prefs.getInt("gender")!;
     Future.wait([dorecord(), getMessageFromApi()]);
   }
 

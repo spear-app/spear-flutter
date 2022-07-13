@@ -39,8 +39,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
             .of<Auth>(
           context,
           listen: false,
-        )
-            .currentUser;
+        ).currentUser;
 
         print("doneeeeeeeeeeeeeeeeeeeeeeeee");
 
@@ -48,6 +47,10 @@ class _VerificationScreenState extends State<VerificationScreen> {
         //prefs.setString('token', token);
         prefs.setString('token', token!.trim());
         prefs.setString('name', user!.name.trim());
+        int gender = 1;
+        if (user.gender.trim() == "MALE")
+          gender = 0;
+        prefs.setInt("gender", gender);
       }
       SmartDialog.dismiss();
     }

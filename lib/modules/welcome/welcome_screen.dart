@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spear_ui/modules/Forward/forward_screen.dart';
 import 'package:spear_ui/modules/chat/conversation_screen.dart';
+import 'package:spear_ui/modules/notification/notification_screen.dart';
 import 'package:spear_ui/shared/components.dart';
 import 'package:spear_ui/shared/constant.dart';
 import 'package:spear_ui/shared/logic/text_to_speech.dart';
@@ -200,7 +201,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               const SizedBox(
                 height: 15,
               ),
-              customRoundedButton("My Notifications", Size(width / 1.22, 50), ()=>null),
+              customRoundedButton("My Notifications", Size(width / 1.22, 50), (){
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>NotificationScreen() ));
+              }),
 
               const SizedBox(
                 height: 15,

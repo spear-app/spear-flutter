@@ -28,17 +28,9 @@ class Auth with ChangeNotifier {
 
   Future<int> login(
       String email, String password, BuildContext context) async {
-    //  print("helloww " + username + "   " + password);
-    //var authHeader = '${base64.encode(utf8.encode('$email:$password'))}';
-
-    //print('Bearer $authHeader');
     final url = Uri.parse(
         'http://100.68.80.20:8000/api/login');
     final response = await http.post(url,
-        /*headers: {
-          "Content-Type": "application/json",
-          HttpHeaders.authorizationHeader: "Bearer $authHeader"
-        },*/
         body: json.encode(<String, dynamic>{
           "email": email.trim(),
           "password": password.trim(),
@@ -58,8 +50,6 @@ class Auth with ChangeNotifier {
       );
       print(responseData['user']);
       _currentUser = User.fromJson(responseData['user']);
-      print(_currentUser!.name);
-      print(_currentUser!.id);
     }
     return response.statusCode;
   }
@@ -74,10 +64,6 @@ class Auth with ChangeNotifier {
     final url = Uri.parse(
         'http://100.68.80.20:8000/api/signup');
     final response = await http.post(url,
-        /*headers: {
-          "Content-Type": "application/json",
-          HttpHeaders.authorizationHeader: "Bearer $authHeader"
-        },*/
         body: json.encode(<String, dynamic>{
           "name" : name,
           "email" : email,
@@ -113,10 +99,6 @@ class Auth with ChangeNotifier {
         uri);
 
     final response = await http.post(url,
-        /*headers: {
-          "Content-Type": "application/json",
-          HttpHeaders.authorizationHeader: "Bearer $authHeader"
-        },*/
         body: json.encode(<String, dynamic>{
           "OTP" : code,
         }));
