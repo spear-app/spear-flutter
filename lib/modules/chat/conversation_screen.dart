@@ -70,11 +70,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
   }
 
 
-  void _initSpeech() async {
+  /*void _initSpeech() async {
     _speechEnabled = await speech.initialize();
     setState(() {});
     startListening();
-  }
+  }*/
 
 
   Future<void> initLanguages() async {
@@ -280,7 +280,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   }
 
 
-  void _onSpeechResult(SpeechRecognitionResult result) {
+ /* void _onSpeechResult(SpeechRecognitionResult result) {
     setState(() {
       _lastWords = result.recognizedWords;
       final message = Message(
@@ -292,8 +292,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
       );
       messagesList.add(message);
     });
-  }
- void startListening() async{
+  }*/
+ /*void startListening() async{
     // _logEvent('start listening');
     _lastWords = '';
     // lastError = '';
@@ -317,7 +317,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
       });
     }
 
-  }
+  }*/
 /*
   void _onSpeechResult(SpeechRecognitionResult result) {
     setState(() {
@@ -492,7 +492,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
       api.sendAudio(file, "$count.wav").then((value){
         setState((){
           count ++;
-          messagesList.add(value);
+          if (value.content != "Error: <class 'speech_recognition.UnknownValueError'>")
+            messagesList.add(value);
         });
       });
 

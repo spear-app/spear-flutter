@@ -55,10 +55,11 @@ class ApiServices{
   * */
 
 
-  startConversation (context) async{
+  startConversation (context, languageCode) async{
     final response = await dio.post(startConv,
       data: jsonEncode(<String, bool>{
         "start_conversation":true,
+        "language" : languageCode,
       }));
 
     if (response.statusCode == 200)
