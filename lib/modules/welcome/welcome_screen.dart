@@ -1,5 +1,12 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:audio_session/audio_session.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spear_ui/modules/Forward/forward_screen.dart';
@@ -23,18 +30,27 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-  String? defaultLanguage ;
+  //String? defaultLanguage ;
   String? selectedValue;
-  late String language;
-  String? currentLang;
-  String? languageCode;
-  List<String> languages = <String>[];
-  List<String> languageCodes = <String>[];
-  List<DropdownMenuItem<String>> dropdownItems = [];
+  late Timer timer;
+  FlutterSoundRecorder? _mRecorder = FlutterSoundRecorder();
+  var x = 1;
+  //late String language;
+  //String? currentLang;
+  //String? languageCode;
+  //List<String> languages = <String>[];
+  //List<String> languageCodes = <String>[];
+  List<DropdownMenuItem<String>> dropdownItems = [
+  new DropdownMenuItem(child: Text("Arabic"),value: "ar-EG",),
+  new DropdownMenuItem(child: Text("English"),value: "en-US",),
+  new DropdownMenuItem(child: Text("German"),value: "de-DE",),
+  new DropdownMenuItem(child: Text("Italian"),value: "it-IT",),
+  new DropdownMenuItem(child: Text("French"),value: "fr-BE",),
+  ];
 
 
 
-  Future<void> initLanguages() async {
+  /*Future<void> initLanguages() async {
     /// populate lang code (i.e. en-US)
     languageCodes = await tts.getLanguages();
 
@@ -70,8 +86,80 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       setState(() {});
     }
 
+  }*/
+
+  Future<void> openTheRecorder() async {
+    //downloadDirectory= (await getDownloadsDirectory())!;
+    if (!kIsWeb) {
+      var status = await Permission.microphone.request();
+      if (status != PermissionStatus.granted) {
+        throw RecordingPermissionException('Microphone permission not granted');
+      }
+    }
+    await _mRecorder!.openRecorder();
+    /*if (!await _mRecorder!.isEncoderSupported(_codec) && kIsWeb) {
+      //_codec = Codec.opusWebM;
+      //_mPath = 'tau_file.webm';
+      if (!await _mRecorder!.isEncoderSupported(_codec) && kIsWeb) {
+        _mRecorderIsInited = true;
+        return;
+      }
+    }*/
+    final session = await AudioSession.instance;
+    await session.configure(AudioSessionConfiguration(
+      avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
+      avAudioSessionCategoryOptions:
+      AVAudioSessionCategoryOptions.allowBluetooth |
+      AVAudioSessionCategoryOptions.defaultToSpeaker,
+      avAudioSessionMode: AVAudioSessionMode.spokenAudio,
+      avAudioSessionRouteSharingPolicy:
+      AVAudioSessionRouteSharingPolicy.defaultPolicy,
+      avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
+      androidAudioAttributes: const AndroidAudioAttributes(
+        contentType: AndroidAudioContentType.speech,
+        flags: AndroidAudioFlags.none,
+        usage: AndroidAudioUsage.voiceCommunication,
+      ),
+      androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
+      androidWillPauseWhenDucked: true,
+    ));
+
+    //_mRecorderIsInited = true;
   }
 
+  Future<void>dorecord()async {
+    record();
+    timer = Timer.periodic(Duration(seconds: 5), (timer) async {
+      await stopRecorder();
+      setState((){
+        x++;
+      });
+      record();
+    });
+  }
+
+  void record() async{
+    _mRecorder!
+        .startRecorder(
+      toFile: '/data/user/0/spearapp.com.spear_ui/cache/${x}.wav',
+      // codec: _codec,
+      audioSource: theSource,
+    )
+        .then((value) {
+      setState(() {});
+    });
+  }
+
+  Future<void> stopRecorder() async {
+    await _mRecorder!.stopRecorder().then((value) {
+      setState(() {
+        //var url = value;
+        //_mplaybackReady = true;
+        print("reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee  ");
+        print('${x}.wav');
+      });
+    });
+  }
 
   Future<void> _showMyDialog() async {
     return showDialog<void>(
@@ -102,10 +190,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               child: const Text('Start'),
               onPressed: () async {
                 print(selectedValue);
-                String? languageCode = await tts.getLanguageCodeByName(selectedValue!);
-                print(languageCode);
+                //String? languageCode = await tts.getLanguageCodeByName(selectedValue!);
+                //print(languageCode);
                 Navigator.of(context).pop();
-                await startConversation(context, languageCode);
+                await startConversation(context, selectedValue);
               },
             ),
           ],
@@ -135,11 +223,63 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     }
   }
 
+  int count = 1;
+  late Timer timer1 ;
+  Future <void> soundDetectio()
+  async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString('token');
+    ApiServices api = ApiServices.getinstance(token!);
+
+    sleep(Duration(seconds: 10));
+    timer1 = Timer.periodic(Duration(seconds: 5), (timer) async {
+      final uri = Uri.parse("/data/user/0/spearapp.com.spear_ui/cache/${count}.wav");
+      File file = File(uri.path);
+      api.soundDetection(file, "$count.wav").then((value){
+        setState((){
+          /*count ++;
+          if (value.content != "Error: <class 'speech_recognition.UnknownValueError'>")
+            messagesList.add(value);*/
+          if (value!= "other") {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value)));
+          }
+          print(value);
+        });
+      });
+
+
+    });
+  }
 
   @override
   void initState(){
-    initLanguages();
+   /* openTheRecorder().then((value) {
+      start();
+    });*/
     super.initState();
+  }
+
+  void dispose() {
+    dostopRecorder();
+    //timer1.cancel();
+
+    super.dispose();
+  }
+
+  void dostopRecorder()
+  async{
+
+    timer.cancel();
+    timer1.cancel();
+    if (!_mRecorder!.isStopped) {
+      await stopRecorder();
+    }
+  }
+
+
+
+  start ()async{
+    Future.wait([dorecord(),soundDetectio ()]);
   }
 
   @override

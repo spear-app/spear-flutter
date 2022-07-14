@@ -48,5 +48,12 @@ class User {
     );
   }
 
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'gender':gender,
+    'email': email,
+  };
+
 
 }

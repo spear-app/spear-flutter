@@ -1,6 +1,11 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spear_ui/modules/Welcome/welcome_screen.dart';
+import 'package:spear_ui/shared/constant.dart';
+import 'package:spear_ui/shared/models/api_services.dart';
 import 'package:spear_ui/shared/models/notification.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -13,21 +18,60 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
-  List<Notificationn> notificationsList = [new Notificationn(NotificationTitle: NotificationScreen.title, NotififcationBody: NotificationScreen.body, time: NotificationScreen.dateTimee),
-    new Notificationn(NotificationTitle: NotificationScreen.title, NotififcationBody: NotificationScreen.body, time: NotificationScreen.dateTimee),
-    new Notificationn(NotificationTitle: NotificationScreen.title, NotififcationBody: NotificationScreen.body, time: NotificationScreen.dateTimee),
-    new Notificationn(NotificationTitle: NotificationScreen.title, NotififcationBody: NotificationScreen.body, time: NotificationScreen.dateTimee)];
+  List<Notificationn> notificationsList = [new Notificationn(NotificationScreen.title,  NotificationScreen.body, NotificationScreen.dateTimee, 2),
+    new Notificationn(NotificationScreen.title,  NotificationScreen.body, NotificationScreen.dateTimee, 2),
+    new Notificationn(NotificationScreen.title,  NotificationScreen.body, NotificationScreen.dateTimee, 2),
+    new Notificationn(NotificationScreen.title,  NotificationScreen.body, NotificationScreen.dateTimee, 2)];
+
+
+  fetchNotification()async{
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var token = pref.getString('token');
+    int? id = pref.getInt("id");
+    SmartDialog.showLoading();
+    try{
+      ApiServices api = ApiServices(token!);
+      final responce = api.fetchNotification(id);
+      if (responce != 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('error in getting notifications')));
+      }
+      SmartDialog.dismiss();
+
+    }catch(e)
+    {
+      SmartDialog.dismiss();
+      print (e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(),
-      body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage("assets/background.png"), fit: BoxFit.fill),
-          ),
-          child: listView()),
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading:IconButton(icon:Icon( Icons.arrow_back,),onPressed:()async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            String? name = prefs.getString('name');
+            Navigator.pushAndRemoveUntil(context,
+              MaterialPageRoute(builder: (context) => WelcomeScreen(name!)),
+                  (Route<dynamic> route) => false,
+            );
+          } ,)
+      ),
+      body: Stack(
+        children: [
+          Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage("assets/images/background.png"), fit: BoxFit.fill),
+              ),
+              child: listView()),
+        ],
+      ),
     );
   }
 
@@ -79,7 +123,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           color: Colors.grey.shade300,
         ),
         child:
-            Icon(Icons.notifications, size: 25, color: Colors.grey.shade700));
+            Icon(Icons.notifications, size: 25, color: orange));
   }
 
   Widget message(Notificationn notification, int index) {

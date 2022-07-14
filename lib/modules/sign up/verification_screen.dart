@@ -47,6 +47,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
         //prefs.setString('token', token);
         prefs.setString('token', token!.trim());
         prefs.setString('name', user!.name.trim());
+        prefs.setInt("id", user.id);
         int gender = 1;
         if (user.gender.trim() == "MALE")
           gender = 0;

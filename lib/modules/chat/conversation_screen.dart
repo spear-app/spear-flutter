@@ -466,7 +466,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
     });
   }
 
-  Future<void> deleteFile(String path) async {
+  /*Future<void> deleteFile(String path) async {
     try {
       File file = new File(path);
       if (await file.exists()) {
@@ -475,7 +475,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
     } catch (e) {
       print("Error in getting access to the file.");
     }
-  }
+  }*/
 
   int count = 1;
   late Timer timer1 ;

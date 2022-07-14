@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:spear_ui/modules/Welcome/welcome_screen.dart';
 import 'package:spear_ui/shared/components.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -70,6 +71,20 @@ class _ForwardScreenState extends State<ForwardScreen> {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading:IconButton(icon:Icon( Icons.arrow_back),onPressed:()async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            String? name = prefs.getString('name');
+            Navigator.pushAndRemoveUntil(context,
+              MaterialPageRoute(builder: (context) => WelcomeScreen(name!)),
+                  (Route<dynamic> route) => false,
+            );
+          } ,)
+      ),
       body: Stack(
         children: [
           Container(color: Colors.white),

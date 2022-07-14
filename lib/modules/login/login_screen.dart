@@ -38,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (loginResponse != 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('email or password')));
+            const SnackBar(content: Text('wrong email or password')));
       } else {
         String? token = Provider
             .of<Auth>(
@@ -55,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('token', token!.trim());
         prefs.setString('name', user!.name.trim());
+        prefs.setInt("id", user!.id);
         int gender = 1;
         if (user!.gender.trim() == "MALE")
           gender = 0;
