@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:spear_ui/modules/Welcome/welcome_screen.dart';
 import 'package:spear_ui/modules/chat/conversation_screen.dart';
+import 'package:spear_ui/shared/constant.dart';
 import 'package:spear_ui/shared/models/message.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:spear_ui/shared/models/notification.dart';
@@ -40,33 +41,19 @@ class ApiServices{
 
   ApiServices._internal();
 
-  /*
-  *  createDepartment(String depName) async {
-    final response = await dio.post(
-        "http://kerols3489-001-site1.btempurl.com/department/Insert",
-        data: jsonEncode(<String, String>{
-          'name': depName,
-        }));
-    if (response.statusCode == 200) {
-      return response;
-    } else {
-      throw Exception('failed to create deprtment');
-    }
-  }
-
-  * */
-
 
   startConversation (context, languageCode) async{
     final response = await dio.post(startConv,
-      data: jsonEncode(<String, bool>{
+      data: jsonEncode(<String, dynamic>{
         "start_conversation":true,
         "language" : languageCode,
       }));
 
     if (response.statusCode == 200)
       {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ConversationScreen()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ConversationScreen()));
+        print("opeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeen");
+        print(response.statusCode);
         return response;
       }
     else{
@@ -85,7 +72,7 @@ class ApiServices{
       return response;
     }
     else{
-      throw Exception('failed to start conversation');
+      throw Exception('failed to end conversation');
     }
   }
 
@@ -159,7 +146,7 @@ class ApiServices{
     if (response.statusCode ==200)
     {
       print ('reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
-      return response.data['sound'];
+      return response.data['title'];
     }
     else {
       final responseData = jsonDecode(response.data);

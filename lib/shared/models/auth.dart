@@ -80,7 +80,7 @@ class Auth with ChangeNotifier {
       }
       _token = responseData['token'];
       Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context)=> WelcomeScreen(name)),
+        MaterialPageRoute(builder: (context)=> VerificationScreen()),
             (Route<dynamic> route) =>false,
       );
 

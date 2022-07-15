@@ -103,7 +103,7 @@ class _ForwardScreenState extends State<ForwardScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    customRoundedButton("Write text", Size(width / 2, 50), () async{
+                    customRoundedButton("View text", Size(width / 2, 50), () async{
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       var token = prefs.getString('token');
                       ApiServices api = ApiServices.getinstance(token!);
@@ -118,7 +118,7 @@ class _ForwardScreenState extends State<ForwardScreen> {
                       });
                       //_sharedFiles?.clear();
                     }),
-                    Text(fileName),
+                    //Text(fileName),
                     SizedBox(
                       height: height / 10,
                     ),

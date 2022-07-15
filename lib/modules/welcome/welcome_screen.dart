@@ -192,7 +192,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 print(selectedValue);
                 //String? languageCode = await tts.getLanguageCodeByName(selectedValue!);
                 //print(languageCode);
-                Navigator.of(context).pop();
+                //Navigator.of(context).pop();
                 await startConversation(context, selectedValue);
               },
             ),
@@ -205,6 +205,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   startConversation(context, languageCode)
   async {
+    dostopRecorder();
     SmartDialog.showLoading();
     SharedPreferences pref = await SharedPreferences.getInstance();
     var token = pref.getString('token');
@@ -253,14 +254,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   void initState(){
-   /* openTheRecorder().then((value) {
+   /*openTheRecorder().then((value) {
       start();
     });*/
     super.initState();
   }
 
   void dispose() {
-    dostopRecorder();
+    //dostopRecorder();
     //timer1.cancel();
 
     super.dispose();
@@ -335,8 +336,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               ),
               customRoundedButton(
                   "Start A New Conversation", Size(width / 1.22, 50), ()async{
-                    _showMyDialog();
-                    //await startConversation(context);
+                   // _showMyDialog();
+                    await startConversation(context, "ar-EG");
               }),
               const SizedBox(
                 height: 15,
