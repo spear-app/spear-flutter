@@ -34,6 +34,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   String? selectedValue;
   late Timer timer;
   FlutterSoundRecorder? _mRecorder = FlutterSoundRecorder();
+  FlutterSoundPlayer? _mPlayer = FlutterSoundPlayer();
   var x = 1;
   //late String language;
   //String? currentLang;
@@ -50,44 +51,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
 
 
-  /*Future<void> initLanguages() async {
-    /// populate lang code (i.e. en-US)
-    languageCodes = await tts.getLanguages();
-
-    /// populate displayed language (i.e. English)
-    final List<String>? displayLanguages = await tts.getDisplayLanguages();
-    if (displayLanguages == null) {
-      return;
-    }
-
-    languages.clear();
-    for (final dynamic lang in displayLanguages) {
-      languages.add(lang as String);
-
-      var newItem = DropdownMenuItem(
-        child: Text(lang as String),
-        value: lang as String,
-      );
-
-      dropdownItems.add(newItem);
-
-    }
-
-
-    final String? defaultLangCode = await tts.getDefaultLanguage();
-    if (defaultLangCode != null && languageCodes.contains(defaultLangCode)) {
-      languageCode = defaultLangCode;
-    } else {
-      languageCode = defaultLanguage;
-    }
-    language = (await tts.getDisplayLanguageByCode(languageCode!))!;
-
-    if (mounted) {
-      setState(() {});
-    }
-
-  }*/
-
   Future<void> openTheRecorder() async {
     //downloadDirectory= (await getDownloadsDirectory())!;
     if (!kIsWeb) {
@@ -97,14 +60,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       }
     }
     await _mRecorder!.openRecorder();
-    /*if (!await _mRecorder!.isEncoderSupported(_codec) && kIsWeb) {
-      //_codec = Codec.opusWebM;
-      //_mPath = 'tau_file.webm';
-      if (!await _mRecorder!.isEncoderSupported(_codec) && kIsWeb) {
-        _mRecorderIsInited = true;
-        return;
-      }
-    }*/
     final session = await AudioSession.instance;
     await session.configure(AudioSessionConfiguration(
       avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
@@ -232,15 +187,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     var token = prefs.getString('token');
     ApiServices api = ApiServices.getinstance(token!);
 
-    sleep(Duration(seconds: 10));
+    sleep(Duration(seconds: 15));
     timer1 = Timer.periodic(Duration(seconds: 5), (timer) async {
       final uri = Uri.parse("/data/user/0/spearapp.com.spear_ui/cache/${count}.wav");
       File file = File(uri.path);
       api.soundDetection(file, "$count.wav").then((value){
         setState((){
-          /*count ++;
-          if (value.content != "Error: <class 'speech_recognition.UnknownValueError'>")
-            messagesList.add(value);*/
+          count ++;
           if (value!= "other") {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value)));
           }
@@ -251,19 +204,38 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
     });
   }
+  int i = 1;
+  Future<void> play() async {
+
+    _mPlayer!
+        .startPlayer(
+        fromURI: "/data/user/0/spearapp.com.spear_ui/cache/${i}.wav",
+        //codec:Codec.aacADTS,
+        whenFinished: () {
+          setState(() async {
+            //await deleteFile("/data/user/0/spearapp.com.spear_ui/cache/${i}.wav");
+            i++;
+          });
+        })
+        .then((value) {
+      setState(() {});
+    });
+  }
+
 
   @override
   void initState(){
-   /*openTheRecorder().then((value) {
+   openTheRecorder().then((value) {
       start();
-    });*/
+    });
     super.initState();
   }
 
   void dispose() {
-    //dostopRecorder();
-    //timer1.cancel();
+    dostopRecorder();
+    timer1.cancel();
 
+    _mRecorder!.closeRecorder();
     super.dispose();
   }
 
@@ -311,12 +283,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           ]
           )
       ),
-      // floatingActionButton: const FloatingActionButton(
-      //   // onPressed: () {
-      //   //   navigateTo(context, AddRooms());
-      //   // },
-      //   child: Icon(Icons.add),
-      // ),
+
       body: Container(
         constraints: BoxConstraints.expand(),
         decoration: const BoxDecoration(
@@ -350,7 +317,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 height: 15,
               ),
               customRoundedButton("Forward Messages", Size(width / 1.22, 50), (){
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ForwardScreen() ));
+                Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>ForwardScreen() ));
               }),
 
             ],

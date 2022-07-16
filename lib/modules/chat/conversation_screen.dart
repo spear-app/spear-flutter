@@ -108,6 +108,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   void dispose() {
     _mPlayer!.closePlayer();
     _mPlayer = null;
+    _mRecorder!.stopRecorder();
 
     super.dispose();
   }
@@ -280,60 +281,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
   }
 
 
- /* void _onSpeechResult(SpeechRecognitionResult result) {
-    setState(() {
-      _lastWords = result.recognizedWords;
-      final message = Message(
-          content: _lastWords,
-          time: DateTime.now().microsecondsSinceEpoch,
-          senderName: "Person 1",
-          sent: false,
-          language: language
-      );
-      messagesList.add(message);
-    });
-  }*/
- /*void startListening() async{
-    // _logEvent('start listening');
-    _lastWords = '';
-    // lastError = '';
-    // Note that `listenFor` is the maximum, not the minimun, on some
-    // recognition will be stopped before this value is reached.
-    // Similarly `pauseFor` is a maximum not a minimum and may be ignored
-    // on some devices.
-    while (true) {
-      await speech.listen(
-          onResult: _onSpeechResult,
-          listenFor: Duration(seconds: 60),
-          pauseFor: Duration(seconds: 60),
-          partialResults: true,
-          localeId: 'ar-EG',
-          //onSoundLevelChange:  soundLevelListener,
-          cancelOnError: true,
-          listenMode: ListenMode.confirmation);
-
-      setState(() {
-
-      });
-    }
-
-  }*/
-/*
-  void _onSpeechResult(SpeechRecognitionResult result) {
-    setState(() {
-      _lastWords = result.recognizedWords;
-    });
-  }
-  void startListening() async {
-    await speech.listen(onResult: _onSpeechResult);
-    setState(() {});
-  }*/
-
-  void _stopListening() async {
-    await speech.stop();
-    setState(() {});
-  }
-
   void sendMessage() {
     if (typedMessage=="") return;
     final message = Message(
@@ -361,7 +308,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
   FlutterSoundRecorder? _mRecorder = FlutterSoundRecorder();
 
   Future<void> openTheRecorder() async {
-    //downloadDirectory= (await getDownloadsDirectory())!;
     if (!kIsWeb) {
       var status = await Permission.microphone.request();
       if (status != PermissionStatus.granted) {
@@ -369,14 +315,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
       }
     }
     await _mRecorder!.openRecorder();
-    /*if (!await _mRecorder!.isEncoderSupported(_codec) && kIsWeb) {
-      //_codec = Codec.opusWebM;
-      //_mPath = 'tau_file.webm';
-      if (!await _mRecorder!.isEncoderSupported(_codec) && kIsWeb) {
-        _mRecorderIsInited = true;
-        return;
-      }
-    }*/
+
     final session = await AudioSession.instance;
     await session.configure(AudioSessionConfiguration(
       avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
@@ -396,14 +335,12 @@ class _ConversationScreenState extends State<ConversationScreen> {
       androidWillPauseWhenDucked: true,
     ));
 
-    //_mRecorderIsInited = true;
   }
 
   void record() async{
     _mRecorder!
         .startRecorder(
       toFile: '/data/user/0/spearapp.com.spear_ui/cache/${x}.wav',
-      // codec: _codec,
       audioSource: theSource,
     )
         .then((value) {
@@ -466,16 +403,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
     });
   }
 
-  /*Future<void> deleteFile(String path) async {
-    try {
-      File file = new File(path);
-      if (await file.exists()) {
-        await file.delete();
-      }
-    } catch (e) {
-      print("Error in getting access to the file.");
-    }
-  }*/
 
   int count = 1;
   late Timer timer1 ;
@@ -485,14 +412,14 @@ class _ConversationScreenState extends State<ConversationScreen> {
     var token = prefs.getString('token');
     ApiServices api = ApiServices.getinstance(token!);
 
-    sleep(Duration(seconds: 10));
+    sleep(Duration(seconds: 15));
     timer1 = Timer.periodic(Duration(seconds: 5), (timer) async {
       final uri = Uri.parse("/data/user/0/spearapp.com.spear_ui/cache/${count}.wav");
       File file = File(uri.path);
       api.sendAudio(file, "$count.wav").then((value){
         setState((){
           count ++;
-          if (value.content != "Error: <class 'speech_recognition.UnknownValueError'>")
+          if (value.senderName != "no speaker found")
             messagesList.add(value);
         });
       });
@@ -529,10 +456,4 @@ class _ConversationScreenState extends State<ConversationScreen> {
     }
   }
 
-// }
-//
-// class RoomDetailsArgs {
-//   Room room;
-//   RoomDetailsArgs(this.room);
-//
 }

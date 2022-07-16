@@ -9,9 +9,9 @@ class Notificationn {
 
   factory Notificationn.fromJson(dynamic json){
     return Notificationn(
-        "title" as String,
-        "body" as String,
-        DateTime.now(),
-        "user_id" as int );
+        json["title"] as String,
+        json["body"] as String,
+        DateTime.parse(json["created_at"] as String),
+        json["id"] as int);
   }
 }

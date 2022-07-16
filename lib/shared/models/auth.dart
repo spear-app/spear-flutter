@@ -57,10 +57,6 @@ class Auth with ChangeNotifier {
 
   Future<int> signUp(
       String email, String password, String name, String gender,BuildContext context) async {
-    //  print("helloww " + username + "   " + password);
-    //var authHeader = '${base64.encode(utf8.encode('$email:$password'))}';
-
-    //print('Bearer $authHeader');
     final url = Uri.parse(
         'http://100.68.80.20:8000/api/signup');
     final response = await http.post(url,

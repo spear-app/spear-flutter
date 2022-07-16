@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spear_ui/modules/Welcome/welcome_screen.dart';
 import 'package:spear_ui/shared/constant.dart';
@@ -9,33 +10,35 @@ import 'package:spear_ui/shared/models/api_services.dart';
 import 'package:spear_ui/shared/models/notification.dart';
 
 class NotificationScreen extends StatefulWidget {
-  static const String title = "title";
-  static const String body = "body";
-  static DateTime dateTimee = DateTime(2000);
 
   @override
   State<NotificationScreen> createState() => _NotificationScreenState();
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
-  List<Notificationn> notificationsList = [new Notificationn(NotificationScreen.title,  NotificationScreen.body, NotificationScreen.dateTimee, 2),
-    new Notificationn(NotificationScreen.title,  NotificationScreen.body, NotificationScreen.dateTimee, 2),
-    new Notificationn(NotificationScreen.title,  NotificationScreen.body, NotificationScreen.dateTimee, 2),
-    new Notificationn(NotificationScreen.title,  NotificationScreen.body, NotificationScreen.dateTimee, 2)];
+  List<Notificationn> notificationsList = [];
 
 
   fetchNotification()async{
+    SmartDialog.showLoading();
     SharedPreferences pref = await SharedPreferences.getInstance();
     var token = pref.getString('token');
     int? id = pref.getInt("id");
-    SmartDialog.showLoading();
+    print("reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
     try{
       ApiServices api = ApiServices(token!);
-      final responce = api.fetchNotification(id);
-      if (responce != 200) {
+      List<Notificationn> l =  await api.fetchNotification(id);
+      setState(() {
+
+        notificationsList.addAll(l);
+        print(notificationsList[2].NotififcationBody);
+        print(notificationsList[2].NotificationTitle);
+      },);
+
+      /*if (responce != 200) {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('error in getting notifications')));
-      }
+      }*/
       SmartDialog.dismiss();
 
     }catch(e)
@@ -43,6 +46,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
       SmartDialog.dismiss();
       print (e);
     }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchNotification();
+    super.initState();
   }
 
   @override
@@ -133,14 +142,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
         maxLines: 3,
         overflow: TextOverflow.ellipsis,
         text: TextSpan(
-          text: "NotificationTitle",
+          text: notification.NotificationTitle,
           style: TextStyle(
               fontSize: textSize,
               color: Colors.black,
               fontWeight: FontWeight.bold),
           children: [
             TextSpan(
-              text: ' Notification description',
+              text: notification.NotififcationBody,
               style: TextStyle(
                 fontWeight: FontWeight.w400,
               ),
@@ -156,12 +165,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
         margin: EdgeInsets.only(top: 5),
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text('23-3-2-2022',
+          Text(DateFormat('yyyy-MM-dd').format(notificationsList[index].time),
               style: TextStyle(
                 fontSize: 10,
               )),
           Text(
-            '7:10 AM',
+            DateFormat('kk:mm').format(notificationsList[index].time),
             style: TextStyle(
               fontSize: 10,
             ),

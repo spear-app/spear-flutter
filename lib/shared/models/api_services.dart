@@ -87,8 +87,7 @@ class ApiServices{
     print(response.data);
     if (response.statusCode ==200)
       {
-        print ('reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
-        return Message(content: response.data['text'], language: "ss", sent: false, time: 122, senderName:response.data['speaker']);
+        return Message(content: response.data['text'], language: "", sent: false, time: 122, senderName:response.data['speaker']);
       }
     else {
       final responseData = jsonDecode(response.data);
@@ -123,9 +122,9 @@ class ApiServices{
     String uri = "http://100.68.80.20:8000/api/notification/getNotificationByUserId/${id}";
     final response = await dio.get(uri);
     try {
-      return (response.data['data'] as List)
-          .map((e) => Notificationn.fromJson(e))
-          .toList();
+      print (response.data);
+      Iterable l =jsonDecode(response.data);
+      return (l as List).map<Notificationn> ((e) => Notificationn.fromJson(e)).toList();
     } catch (error, stacktrace) {
       throw Exception("error: " +
           error.toString() +
