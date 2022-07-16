@@ -33,10 +33,6 @@ class User {
     _gender = value;
   }
 
-  // set password(String value) {
-  //   _password = value;
-  // }
-
 
   factory User.fromJson(dynamic json) {
     return User.withId(

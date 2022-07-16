@@ -26,7 +26,6 @@ class _VerificationScreenState extends State<VerificationScreen> {
     try {
       final signUpResponse = await verification.verify(code.trim(), context);
       if (signUpResponse != 200) {
-        // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('email or password')));
         showErrorMessage('Something went wrong, please try again');
       } else {
         String? token = Provider
@@ -41,10 +40,9 @@ class _VerificationScreenState extends State<VerificationScreen> {
           listen: false,
         ).currentUser;
 
-        print("doneeeeeeeeeeeeeeeeeeeeeeeee");
+        print("done");
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        //prefs.setString('token', token);
         prefs.setString('token', token!.trim());
         prefs.setString('name', user!.name.trim());
         prefs.setInt("id", user.id);

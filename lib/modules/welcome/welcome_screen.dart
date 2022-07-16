@@ -36,11 +36,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   FlutterSoundRecorder? _mRecorder = FlutterSoundRecorder();
   FlutterSoundPlayer? _mPlayer = FlutterSoundPlayer();
   var x = 1;
-  //late String language;
-  //String? currentLang;
-  //String? languageCode;
-  //List<String> languages = <String>[];
-  //List<String> languageCodes = <String>[];
+
   List<DropdownMenuItem<String>> dropdownItems = [
   new DropdownMenuItem(child: Text("Arabic"),value: "ar-EG",),
   new DropdownMenuItem(child: Text("English"),value: "en-US",),
@@ -52,7 +48,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
 
   Future<void> openTheRecorder() async {
-    //downloadDirectory= (await getDownloadsDirectory())!;
     if (!kIsWeb) {
       var status = await Permission.microphone.request();
       if (status != PermissionStatus.granted) {
@@ -79,7 +74,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       androidWillPauseWhenDucked: true,
     ));
 
-    //_mRecorderIsInited = true;
   }
 
   Future<void>dorecord()async {
@@ -97,7 +91,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     _mRecorder!
         .startRecorder(
       toFile: '/data/user/0/spearapp.com.spear_ui/cache/${x}.wav',
-      // codec: _codec,
       audioSource: theSource,
     )
         .then((value) {
@@ -108,9 +101,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Future<void> stopRecorder() async {
     await _mRecorder!.stopRecorder().then((value) {
       setState(() {
-        //var url = value;
-        //_mplaybackReady = true;
-        print("reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee  ");
         print('${x}.wav');
       });
     });
@@ -204,23 +194,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
     });
   }
-  int i = 1;
-  Future<void> play() async {
-
-    _mPlayer!
-        .startPlayer(
-        fromURI: "/data/user/0/spearapp.com.spear_ui/cache/${i}.wav",
-        //codec:Codec.aacADTS,
-        whenFinished: () {
-          setState(() async {
-            //await deleteFile("/data/user/0/spearapp.com.spear_ui/cache/${i}.wav");
-            i++;
-          });
-        })
-        .then((value) {
-      setState(() {});
-    });
-  }
 
 
   @override
@@ -233,7 +206,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   void dispose() {
     dostopRecorder();
-    timer1.cancel();
 
     _mRecorder!.closeRecorder();
     super.dispose();

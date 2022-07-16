@@ -52,7 +52,6 @@ class ApiServices{
     if (response.statusCode == 200)
       {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ConversationScreen()));
-        print("opeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeen");
         print(response.statusCode);
         return response;
       }
@@ -107,9 +106,7 @@ class ApiServices{
     print(response.data);
     if (response.statusCode ==200)
     {
-      print ('reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
       return response.data['text'];
-      //return responseData['text'];
     }
     else {
       print(response.data);
@@ -144,7 +141,6 @@ class ApiServices{
     print(response.data);
     if (response.statusCode ==200)
     {
-      print ('reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
       return response.data['title'];
     }
     else {

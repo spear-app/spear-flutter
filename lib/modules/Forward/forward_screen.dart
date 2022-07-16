@@ -45,7 +45,6 @@ class _ForwardScreenState extends State<ForwardScreen> {
       setState(() async{
         _sharedFiles = value;
         fileName = "${_sharedFiles?.first.path}";
-        print("reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool("forward", true);
       });

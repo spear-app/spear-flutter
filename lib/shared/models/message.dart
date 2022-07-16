@@ -9,14 +9,6 @@ class Message{
 
   Message({required this.content, required this.time , required this.senderName, required this.sent, required this.language});
 
-  /*factory User.fromJson(dynamic json) {
-    return User.withId(
-        json["id"] as int,
-        json["name"] as String,
-        json["gender"] as String,
-        json["email"] as String,
-
-    );*/
 
   factory Message.fromJson(Map<String, dynamic> json){
     return Message(

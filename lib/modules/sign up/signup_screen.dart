@@ -29,17 +29,15 @@ class _SignUpPageState extends State<SignUpPage> {
   bool showPassword = false;
   bool obsecurePassword = true;
 
-  //Auth auth = new Auth();
   validate(BuildContext context) async {
     SmartDialog.showLoading();
     try {
       final signUpResponse = await signUp.signUp(
           email, password, name, gender, context);
       if (signUpResponse != 200) {
-        // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('email or password')));
         showErrorMessage('Something went wrong, please try again');
       } else {
-        print("doneeeeeeeeeeeeeeeeeeeeeeeee");
+        print("done");
       }
       SmartDialog.dismiss();
     }
@@ -261,19 +259,4 @@ showErrorMessage(String message)
   );
 }
 
- /* signUpFunc ()
-  {
-    var f = signUpFormKey.currentState;
-    var f1 = f?.validate();
-    if (f1== null)
-    {
-      print("invalidddd");
-    }
-    else
-    {
-      f?.save();
-      validate(context);
-      push(context, HomeScreen());
-    }
-  }*/
 }

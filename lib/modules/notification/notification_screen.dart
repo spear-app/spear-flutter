@@ -24,7 +24,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     var token = pref.getString('token');
     int? id = pref.getInt("id");
-    print("reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
     try{
       ApiServices api = ApiServices(token!);
       List<Notificationn> l =  await api.fetchNotification(id);
@@ -35,10 +34,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
         print(notificationsList[2].NotificationTitle);
       },);
 
-      /*if (responce != 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('error in getting notifications')));
-      }*/
       SmartDialog.dismiss();
 
     }catch(e)

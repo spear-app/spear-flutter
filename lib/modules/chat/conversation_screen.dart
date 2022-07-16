@@ -54,13 +54,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       initLanguages();
     });
-    //_initSpeech();
 
-    _mPlayer!.openPlayer().then((value) {
-      setState(() {
-        //_mPlayerIsInited = true;
-      });
-    });
     openTheRecorder().then((value) {
       start();
     });
@@ -69,12 +63,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
     super.initState();
   }
 
-
-  /*void _initSpeech() async {
-    _speechEnabled = await speech.initialize();
-    setState(() {});
-    startListening();
-  }*/
 
 
   Future<void> initLanguages() async {
@@ -106,8 +94,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
   }
 
   void dispose() {
-    _mPlayer!.closePlayer();
-    _mPlayer = null;
     _mRecorder!.stopRecorder();
 
     super.dispose();
@@ -362,9 +348,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
   Future<void> stopRecorder() async {
     await _mRecorder!.stopRecorder().then((value) {
       setState(() {
-        //var url = value;
-        //_mplaybackReady = true;
-        print("reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee  ");
         print('${x}.wav');
       });
     });
@@ -380,27 +363,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
       if (!_mRecorder!.isStopped) {
         await stopRecorder();
       }
-      print("reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee     ${x}");
     }
-
-    play();
-  }
-
-  Future<void> play() async {
-
-    _mPlayer!
-        .startPlayer(
-        fromURI: "/data/user/0/spearapp.com.spear_ui/cache/${i}.wav",
-        //codec:Codec.aacADTS,
-        whenFinished: () {
-          setState(() async {
-            //await deleteFile("/data/user/0/spearapp.com.spear_ui/cache/${i}.wav");
-            i++;
-          });
-        })
-        .then((value) {
-      setState(() {});
-    });
   }
 
 
